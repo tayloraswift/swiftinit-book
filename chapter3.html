@@ -1,9 +1,21 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Functions</title>
+    <title>Symbols</title>
     <link rel="stylesheet" type="text/css" media="all" href="styles.css" />
     <link href="https://fonts.googleapis.com/css?family=Unica+One|Noticia+Text:400,400i,700,700i|Fira+Mono:400,700,&amp;subset=latin-ext" rel="stylesheet">
+    <link rel="stylesheet" href="highlight/styles/github.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="highlight/highlight.pack.js"></script>
+    <script>
+        $(document).ready(function()
+        {
+          $('code.swift').each(function(i, block)
+          {
+            hljs.highlightBlock(block);
+          });
+        });
+    </script>
 </head>
 <body>
     <a class="nav-triangle-left" href="chapter2.html"><div>Prev</div></a>
@@ -11,7 +23,7 @@
 
     <div class="content-container">
         <div class="content">
-            <div class="chapter-header"><div class="chapter-number">3</div><h1>Functions</h1></div>
+            <div class="chapter-header"><div class="chapter-number">3</div><h1>Symbols</h1></div><p>Until now, this book has contained very little actual Swift syntax. This was intentional. I always hated books that introduced syntax before explaining what any of it actually meant. The first two chapters were meant to establish the building blocks of Swift’s functionality — data types, integers, pointers, and memory. Throwing too much syntax into the mix would have been confusing. Now, we’ll establish the building blocks of Swift’s syntax and explore how Swift code is written in text before it’s fed to the compiler.</p><h2>Swift has symbols, punctuation, and literals</h2><p>In English, text is divided into words and punctuation. The words are the stuff of the text, and the punctuation is the glue that puts it together and gives it meaning. Similarly, Swift has <keyword>symbols</keyword> and punctuation. Symbols are names that identify the stuff in a program, like variables, <keyword>functions</keyword>, and <keyword>types</keyword>.</p><p>Punctuation in programming languages isn’t the same as in English. In Swift, <code class="swift">+</code> is a symbol — the addition operator — even though in English it’s considered “punctuation”. Conversely, <keyword>keywords</keyword> like <code class="swift">while</code>, <code class="swift">guard</code>, and <code class="swift">return</code> are words in English, but punctuation in Swift.</p><p>Most of the “special characters” on your keyboard are operators — <code class="swift">=</code>, <code class="swift">+</code>, <code class="swift">-</code>, <code class="swift">*</code>, <code class="swift">/</code>, <code class="swift">!</code>, <code class="swift">?</code>, <code class="swift">%</code>, <code class="swift">^</code>, <code class="swift">&amp;</code>, <code class="swift">|</code>, and <code class="swift">~</code> are all operators.</p>
         </div>
     </div>
 </body>

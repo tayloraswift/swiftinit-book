@@ -19,6 +19,12 @@
 (define (section . elements)
     `(h2 ,@elements))
 
+(define (swift . elements)
+    `(code ((class "swift")) ,@elements))
+
+(define (swift-block . elements)
+    `(pre (code ((class "swift")) ,@elements)))
+
 (define (warning . elements)
     `(div ((class "warning-container")) (h2 "Warning!") (warning ,@elements)))
 

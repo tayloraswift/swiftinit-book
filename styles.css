@@ -125,14 +125,14 @@ ascii-figure
     margin: 0.75rem 1rem 1rem 1.5rem;
 }
 
-swift, ascii-figure
+code, ascii-figure
 {
     font-family: "Fira Mono", monospace;
     text-align: left;
     white-space: pre-wrap;
 }
 
-swift
+code
 {
     font-family: "Fira Mono", monospace;
     font-size: 90%;

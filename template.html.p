@@ -4,6 +4,18 @@
     <title>◊select['h1 doc]</title>
     <link rel="stylesheet" type="text/css" media="all" href="styles.css" />
     <link href="https://fonts.googleapis.com/css?family=Unica+One|Noticia+Text:400,400i,700,700i|Fira+Mono:400,700,&amp;subset=latin-ext" rel="stylesheet">
+    <link rel="stylesheet" href="highlight/styles/github.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="highlight/highlight.pack.js"></script>
+    <script>
+        $(document).ready(function()
+        {
+          $('code.swift').each(function(i, block)
+          {
+            hljs.highlightBlock(block);
+          });
+        });
+    </script>
 </head>
 <body>
     ◊(define prev-page (previous here))
