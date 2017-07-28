@@ -4,9 +4,49 @@ html
     font-size: 24px;
 }
 
-.chapter-header, h2
+.nav-triangle-left, .nav-triangle-right
 {
-    font-family: 'Unica One', serif;
+    display: block;
+    position: fixed;
+    width: 0;
+    height: 0;
+    bottom: 50%;
+    margin-bottom: -4rem;
+}
+.nav-triangle-left
+{
+    text-align: left;
+    left: 0;
+    border-left: 4rem solid rgb(255, 100, 80);
+    border-top: 4rem solid transparent;
+    border-bottom: 4rem solid transparent;
+}
+.nav-triangle-right
+{
+    text-align: right;
+    right: 0;
+    border-right: 4rem solid rgb(255, 100, 80);
+    border-top: 4rem solid transparent;
+    border-bottom: 4rem solid transparent;
+}
+.nav-triangle-left div, .nav-triangle-right div
+{
+    display: inline-block;
+    color: white;
+    margin-top: -0.5rem;
+}
+.nav-triangle-left div
+{
+    margin-left: -3.3rem;
+}
+.nav-triangle-right div
+{
+    margin-right: -3.3rem;
+}
+
+.chapter-header, .nav-triangle-left, .nav-triangle-right, h2
+{
+    font-family: 'Unica One', sans-serif;
     font-weight: normal;
     text-transform: uppercase;
 }
@@ -217,11 +257,28 @@ tr.memory-table-h-cells td.ellipsis:last-child
     border-width: 0 0 0 0;
 }
 
+.content-container
+{
+    padding: 0 0 0 0;
+
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 1000px;
+    min-height: 100%;
+
+    position: relative;
+    z-index: -10000;
+}
+
 .content
 {
-    display: block;
     padding: 3rem 0 10rem 0;
     color: rgb(70, 70, 70);
+
+    font-size: 100%;
+    margin-left: 11.5rem;
+    margin-right: 2.5rem;
 }
 
 .content .centered-container
@@ -235,22 +292,8 @@ a
     color: rgb(255, 80, 80);
 }
 
-body > *
-{
-    font-size: 100%;
-    margin-left: 11.5rem;
-    margin-right: 2.5rem;
-}
-
 body
 {
-    padding: 0 0 0 0;
-
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-    max-width: 1000px;
-    min-height: 100%;
     text-rendering: optimizeLegibility;
     -moz-font-feature-settings: 'kern=1';
     -moz-font-feature-settings: 'kern' 1;
@@ -266,9 +309,6 @@ body
     -o-font-feature-settings: 'liga' 1;
     -ms-font-feature-settings: 'liga' 1;
     font-feature-settings: 'liga' 1;
-
-    position: relative;
-    z-index: -10000;
 }
 
 aside, .warning-container

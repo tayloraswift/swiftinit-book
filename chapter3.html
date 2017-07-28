@@ -1,19 +1,17 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>◊select['h1 doc]</title>
+    <title>Functions</title>
     <link rel="stylesheet" type="text/css" media="all" href="styles.css" />
     <link href="https://fonts.googleapis.com/css?family=Unica+One|Noticia+Text:400,400i,700,700i|Fira+Mono:400,700,&amp;subset=latin-ext" rel="stylesheet">
 </head>
 <body>
-    ◊(define prev-page (previous here))
-    ◊when/splice[prev-page]{<a class="nav-triangle-left" href="◊|prev-page|"><div>Prev</div></a>}
-    ◊(define next-page (next here))
-    ◊when/splice[next-page]{<a class="nav-triangle-right" href="◊|next-page|"><div>Next</div></a>}
+    <a class="nav-triangle-left" href="chapter2.html"><div>Prev</div></a>
+
 
     <div class="content-container">
         <div class="content">
-            ◊(->html doc #:splice? #t)
+            <div class="chapter-header"><div class="chapter-number">3</div><h1>Functions</h1></div>
         </div>
     </div>
 </body>

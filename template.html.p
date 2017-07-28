@@ -6,8 +6,15 @@
     <link href="https://fonts.googleapis.com/css?family=Unica+One|Noticia+Text:400,400i,700,700i|Fira+Mono:400,700,&amp;subset=latin-ext" rel="stylesheet">
 </head>
 <body>
-    <div class="content">
-        ◊(->html doc #:splice? #t)
+    ◊(define prev-page (previous here))
+    ◊when/splice[prev-page]{<a class="nav-triangle-left" href="◊|prev-page|"><div>Prev</div></a>}
+    ◊(define next-page (next here))
+    ◊when/splice[next-page]{<a class="nav-triangle-right" href="◊|next-page|"><div>Next</div></a>}
+
+    <div class="content-container">
+        <div class="content">
+            ◊(->html doc #:splice? #t)
+        </div>
     </div>
 </body>
 </html>
