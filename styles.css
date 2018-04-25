@@ -12,6 +12,7 @@ html
     height: 0;
     bottom: 50%;
     margin-bottom: -4rem;
+    z-index: 1000;
 }
 .nav-triangle-left
 {
@@ -139,7 +140,7 @@ code
     overflow-wrap: break-word;
     padding: 0 0.25rem 0 0.25rem;
     border-radius: 0.25rem;
-    background-color: rgba(255, 50, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 table
@@ -268,7 +269,6 @@ tr.memory-table-h-cells td.ellipsis:last-child
     min-height: 100%;
 
     position: relative;
-    z-index: -10000;
 }
 
 .content

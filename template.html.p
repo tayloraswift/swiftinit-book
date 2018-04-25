@@ -10,6 +10,10 @@
     <script>
         $(document).ready(function()
         {
+          $('code.x86asm').each(function(i, block)
+          {
+            hljs.highlightBlock(block);
+          });
           $('code.swift').each(function(i, block)
           {
             hljs.highlightBlock(block);

@@ -19,6 +19,9 @@
 (define (section . elements)
     `(h2 ,@elements))
 
+(define (x86asm . elements)
+    `(code ((class "x86asm")) ,@elements))
+
 (define (swift . elements)
     `(code ((class "swift")) ,@elements))
 
