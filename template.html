@@ -18,6 +18,10 @@
           {
             hljs.highlightBlock(block);
           });
+          $('pre.x86asm').each(function(i, block)
+          {
+            hljs.highlightBlock(block);
+          });
         });
     </script>
 </head>

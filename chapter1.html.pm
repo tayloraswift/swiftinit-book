@@ -198,3 +198,199 @@ Just like unsigned integers, signed integers can overflow. However, in terms of 
         ◊td{0000,0000} ◊td{0} ◊td-highlight[#:background-color "rgba(255, 0, 50, 0.2)"]{0} ◊td-annotation{← Unsigned overflow}
     }
 }
+
+◊section{Shifting multiplies and divides by the base}
+
+Just as adding a zero to the end of a decimal number multiplies it by 10, adding a zero to the end of a binary number multiplies it by 2. Similarly, just as removing a zero from the end of a decimal number divides it by 10, removing a zero from the end of a binary number divides it by 2. This works even if the least significant digit is not a zero, in which case the quotient is given and the remainder discarded. In computing, this operation is called ◊keyword{shifting}. Because numbers are written from left to right in English, adding zeroes to the end effectively shifts all the existing digits left, so we call this operation a ◊keyword{left shift}. Removing digits from the end has the opposite effect, so we call that operation a ◊keyword{right shift}. The symbols for a left and right shift are ‘<<’ and ‘>>’, respectively.
+
+Shifts can add or remove multiple digits to a number, in which case the factor it’s multiplied or divided by is the base raised to the power of the magnitude of the shift. As you might expect, shifting left by ◊math{◊var{n}} is the same thing as shifting right by ◊math{◊var{−n}}, and vice versa.
+
+◊table[#:class "data-table"]{
+    ◊tr{
+        ◊td{Expression} ◊td{Bit pattern} ◊td{Unsigned value}
+    }
+
+    ◊tr{
+        ◊td{13 << 0} ◊td{0000,1101} ◊td{13}
+    }
+    ◊tr{
+        ◊td{13 << 1} ◊td{0001,1010} ◊td{26}
+    }
+    ◊tr{
+        ◊td{13 << 2} ◊td{0011,0100} ◊td{52}
+    }
+    ◊tr{
+        ◊td{13 << 3} ◊td{0110,1000} ◊td{104}
+    }
+    ◊tr{
+        ◊td{13 << 4} ◊td{1101,0000} ◊td{208}
+    }
+    
+    ◊tr{◊td-invisible{}}
+    
+    ◊tr{
+        ◊td{13 >> 0} ◊td{0000,1101} ◊td{13}
+    }
+    ◊tr{
+        ◊td{13 >> 1} ◊td{0000,0110} ◊td{6}
+    }
+    ◊tr{
+        ◊td{13 >> 2} ◊td{0000,0011} ◊td{3}
+    }
+    ◊tr{
+        ◊td{13 >> 3} ◊td{0000,0001} ◊td{1}
+    }
+    ◊tr{
+        ◊td{13 >> 4} ◊td{0000,0000} ◊td{0}
+    }
+}
+
+◊section{Shifts can overflow}
+
+Like addition and subtraction, left shifts can overflow.
+
+◊table[#:class "data-table"]{
+    ◊tr{
+        ◊td{Expression} ◊td{Bit pattern} ◊td{Unsigned value}
+    }
+
+    ◊tr{
+        ◊td{13 << 4} ◊td{1101,0000} ◊td{208}
+    }
+    ◊tr{
+        ◊td{13 << 5} ◊td{1010,0000} ◊td{160}
+    }
+    ◊tr{
+        ◊td{13 << 6} ◊td{0100,0000} ◊td{64}
+    }
+    ◊tr{
+        ◊td{13 << 7} ◊td{1000,0000} ◊td{128}
+    }
+    ◊tr{
+        ◊td{13 << 8} ◊td{0000,0000} ◊td{0}
+    }
+}
+
+In fact, shifting an integer by an amount greater to or equal to its length will always result in 0, since all of its original bits will have been displaced with zeroes. This is called an ◊keyword{overshift}. 
+
+Right shifting signed integers involves some subtlety. Although replacing the removed digits on the right with zeroes on the left works fine for unsigned integers, weird things happen when you try to right shift signed integers. 
+
+◊table[#:class "data-table"]{
+    ◊tr{
+        ◊td{Expression} ◊td{Bit pattern} ◊td{Signed value}
+    }
+
+    ◊tr{
+        ◊td{-89 >> 0} ◊td{1010,0111} ◊td{-89}
+    }
+    ◊tr{
+        ◊td{-89 >> 1} ◊td{0101,0011} ◊td{+83}
+    }
+    ◊tr{
+        ◊td{-89 >> 2} ◊td{0010,1001} ◊td{+41}
+    }
+    ◊tr{
+        ◊td{-89 >> 3} ◊td{0001,0100} ◊td{+20}
+    }
+}
+
+The zeroes that appear on the left side of the bit pattern when the value is right shifted are called a ◊keyword{zero-extension}, or ◊keyword{ZEXT}. If we instead pad the left with copies of the sign bit, we get a more sensible result.
+
+
+◊table[#:class "data-table"]{
+    ◊tr{
+        ◊td{Expression} ◊td{Bit pattern} ◊td{Signed value}
+    }
+
+    ◊tr{
+        ◊td{-89 >> 0} ◊td{1010,0111} ◊td{-89}
+    }
+    ◊tr{
+        ◊td{-89 >> 1} ◊td{1101,0011} ◊td{−45}
+    }
+    ◊tr{
+        ◊td{-89 >> 2} ◊td{1110,1001} ◊td{−23}
+    }
+    ◊tr{
+        ◊td{-89 >> 3} ◊td{1111,0100} ◊td{−12}
+    }
+}
+
+This kind of padding is called a ◊keyword{sign-extension}, or ◊keyword{SEXT}. (Yes, I know.) To differentiate between the two methods of right shifting, we call the zero-extending version a ◊keyword{logical right shift}, and the sign-extending version an ◊keyword{arithmetic right shift}. Logical right shifts are appropriate for unsigned values, while arithmetic right shifts are appropriate for signed values.
+
+Like logical right shifts for unsigned integers, arithmetic right shifts round signed integers down (towards negative infinity.) So ◊math{−89 >> 1} is −45, not −44.
+
+◊section{Integer multiplication and division}
+
+Binary multiplication is pretty straightfoward compared to decimal multiplication. The same elementary school algorithm works in binary, except we don’t even need to do any multiplication — multiplying two binary numbers is just a matter of adding up left-shifted versions of one of the factors, corresponding to the 1 bits in the other factor. 
+
+◊centered-ascii-figure{  0 0 0 1 0 1 1 1 = 23
+× 0 0 0 0 1 0 1 1 = 11
+——————————————————
+  0 0 0 1 0 1 1 1 = 23 << 0
+  0 0 1 0 1 1 1   = 23 << 1
+                      
++ 1 0 1 1 1       = 23 << 3
+———————————————————
+  1 1 1 1 1 1 0 1 = 253
+}
+
+As you can imagine, integer multiplication overflows pretty easily. 
+
+Multiplication is more complex to implement in hardware than addition is, but the multipliers in most processors are about as fast as the adders. Integer division, on the other hand, is far more complicated than either multiplication or addition, and is usually much slower than multiplication.
+
+Integer dividers usually yield both the ◊keyword{quotient} and ◊keyword{remainder} at the same time. So the remainder operation (‘%’) is actually performed by the same circuit as the quotient operation (‘/’).
+
+◊aside{Many Swift tutorials refer to ◊code{%} as the modulus operator. ◊em{This is wrong}. Modular division rounds towards negative infinity, so modulos are always positive. This means ◊math{−7 mod 3} is +2, not −1.}
+
+Quotients and remainders are defined such that if ◊math{◊var{a}} is the dividend, ◊math{◊var{b}} is the divisor, ◊math{◊var{q}} is the quotient, and ◊math{◊var{r}} is the remainder, then ◊math{◊var{a} ≡ ◊var{q} ◊var{b} + ◊var{r}}. Unlike an arithmetic right shift, an integer division always rounds towards zero. So ◊math{−7 / 3} is −2, not −3. This means the product ◊math{◊var{q} ◊var{b}} and the remainder ◊math{◊var{r}} always have the same sign as ◊math{◊var{a}}. So ◊math{−7 % 3} is −1, not +2. It follows that ◊math{−7 % −3} is also −1.
+
+◊section{Boolean logic}
+
+Several operations are native to binary and have no analogues in decimal. These operations are called ◊keyword{boolean operations}. The ◊keyword{not} (‘¬’), ◊keyword{and} (‘∧’), ◊keyword{inclusive or} (‘∨’), and ◊keyword{exclusive or} (‘⊻’) operations are the four that we usually consider “primary” boolean operators, though in truth, all boolean operators can be expressed in terms of just two of them: one of ∧ or ∨, combined with one of ¬ or ⊻. This property is called ◊keyword{logical completeness}.
+
+Not is a ◊keyword{unary operator}, meaning it takes only one ◊keyword{operand}. Not is defined as the opposite of whatever its operand is. So ¬0 is 1, and ¬1 is 0.
+
+◊aside{The word “binary” in this context just means “two” (as opposed to “one”.) It has nothing to do with base 2.}
+
+And, inclusive or, and exclusive or are ◊keyword{binary operators}, meaning they take two operands. (Addition, subtraction, multiplication, and division are all also binary operations.) 
+
+And is defined as 1 if ◊em{both} operands are 1, and 0 otherwise. Inclusive or, which we usually just call “or”, is defined as 0 if ◊em{both} operands are 0, and 1 otherwise. This is the same as saying and is defined as 0 if ◊em{at least} one operand is 0, and or is defined as 1 if ◊em{at least} one operand is 1. 
+
+Exclusive or, which we usually abbreviate as ◊keyword{xor}, is defined as 1 if exactly ◊em{one} of the operands is 1. (This implies the other operand ◊em{must} be 0.) Anything xored with itself yields 0.
+
+And, or, and xor are all commutative. So ◊math{◊var{p} ∧ ◊var{q} ≡ ◊var{q} ∧ ◊var{p}}, ◊math{◊var{p} ∨ ◊var{q} ≡ ◊var{q} ∨ ◊var{p}}, and ◊math{◊var{p} ⊻ ◊var{q} ≡ ◊var{q} ⊻ ◊var{p}}.
+
+◊section{Bitwise and logical boolean operations}
+
+Boolean operations can be performed on data values on a ◊keyword{bitwise} basis, applying the operator to each bit (or pair of bits) in the operand (or operands) independently.
+
+◊centered-ascii-figure{
+¬ 0 1 0 1 1 0 0 1
+—————————————————
+  1 0 1 0 0 1 1 0
+}
+
+◊centered-ascii-figure{  0 1 0 1 1 0 0 1
+∧ 0 0 0 1 0 1 1 0
+—————————————————
+  0 0 0 1 0 0 0 0
+}
+
+◊centered-ascii-figure{  0 1 0 1 1 0 0 1
+∨ 0 0 0 1 0 1 1 0
+—————————————————
+  0 1 0 1 1 1 1 1
+}
+
+◊centered-ascii-figure{  0 1 0 1 1 0 0 1
+⊻ 0 0 0 1 0 1 1 0
+—————————————————
+  0 1 0 0 1 1 1 1
+}
+
+Bitwise boolean operations generally have no arithmetic meaning and are mainly used to manipulate bits within a data value. An exception is the ∧ operator, which can be used to take the modulo of a number if the modulus is a power of two. ◊code{0101,1001 ∧ 0000,1111 = 0000,1001} is equivalent to ◊math{89 mod 16 = 9}. Arithmetic right shift and and can be thought of as special cases of flooring division (integer division rounding towards negative infinity) and modulo.
+
+Boolean operations can also be performed on integers as whole units, treating all nonzero integers as being in an ◊keyword{equivalence class} with 1. Boolean operations performed in this way are called ◊keyword{logical boolean operations}, to contrast them with bitwise boolean operations. A logical operation doesn’t always give the same result as its corresponding bitwise operation on the same inputs. ◊code{0101,0101 ∧ 1010,1010} is 1 with a logical and (since both operands are nonzero), but 0 with a bitwise and (since no two corresponding bits are both 1.)
+
+Only ∧, ∨, and ¬ have well-defined logical forms. Nonequality (‘≠’) is usually taken as the logical version of ⊻, though there are alternative ways of generalizing ⊻ to the logical domain.

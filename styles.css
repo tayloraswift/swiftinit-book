@@ -126,7 +126,7 @@ ascii-figure
     margin: 0.75rem 1rem 1rem 1.5rem;
 }
 
-code, ascii-figure
+code, pre, ascii-figure
 {
     font-family: "Fira Mono", monospace;
     text-align: left;
@@ -141,6 +141,26 @@ code
     padding: 0 0.25rem 0 0.25rem;
     border-radius: 0.25rem;
     background-color: rgba(0, 0, 0, 0.05);
+}
+
+pre 
+{
+    font-size: 90%;
+    padding: 0.5rem 0.75rem 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+pre.x86-prototype 
+{
+    font-size: 100%;
+    border-radius: 0;
+    padding-left: 0;
+    border-top: 2px dashed rgb(230, 230, 230);
+    margin-right: 2rem;
+    margin-bottom: -1rem;
+    margin-top: 2rem;
+    background-color: transparent;
 }
 
 table
