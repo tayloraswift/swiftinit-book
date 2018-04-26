@@ -1,18 +1,18 @@
 #lang pollen
 
-◊chapter[#:index "3"]{Computing}
+◊chapter[#:index "3"]{Instructions}
 
-Memory allows a computer to store data but to make it actually ◊em{do anything}, you have to feed it ◊keyword{instructions} to execute. 
+◊strong{Instructions} specify actions that the computer can perform. To a computer, data values are like nouns. Instructions are like verbs.
 
 Instructions consist of an operation, and multiple operands. The word “instruction” can also refer to just the operation itself. Operands specify the input data for the operation. An operand can be an ◊keyword{immediate} (a constant, hardcoded) value, or the address of a memory location containing the value. ◊keyword{Registers}, special high-speed data storage units, are also valid operands. Although the theoretical ◊keyword{random access machine} model does not involve registers, only memory, real computers have a set of registers, collectively called the ◊keyword{register file}, which serve as scratch space for computations. 
 
 ◊section{Registers store high-traffic data}
 
-Accessing registers is about 3-12 times faster than accessing the fastest parts of memory making them ideal for storing frequently used data. Registers are typically several times the size of a single byte allowing them to store multi-byte values. The size of the register file is usually in the high single- to low double-digits for a typical CPU, though some specialized chips, like GPUs, can contain hundreds.
+Registers are about 3-12 times faster to access than the fastest parts of memory making them ideal for storing frequently used data. Registers are typically several times the size of a single byte allowing them to store multi-byte values. The size of the register file is usually in the high single- to low double-digits for a typical CPU, though some specialized chips, like GPUs, can contain hundreds.
 
-◊aside{We can assume the first four names were chosen so that they would spell out the first four letters of the alphabet when abbreviated.}
+◊aside{We can assume the first four names were chosen so that they would spell out the first four letters of the alphabet when abbreviated. Don’t ask what the ◊code{r} stands for, or the ◊code{x} for that matter. It’s a certified mess.}
 
-Unlike memory locations, registers do not have addresses. Instructions refer to them by name. In the ◊keyword{x86_64 architecture}, the first eight general-purpose registers are named ◊x86asm{rax}, ◊x86asm{rbx}, ◊x86asm{rcx}, ◊x86asm{rdx}, ◊x86asm{rsi}, ◊x86asm{rdi}, ◊x86asm{rbp}, and ◊x86asm{rsp}, which stand for “◊em{accumulator}”, “◊em{base}”, “◊em{counter}”, “◊em{data}”, “◊em{source}”, “◊em{destination}”, “◊em{base pointer}”, and “◊em{stack pointer}”, named after what the designers of x86_64 assumed each register would be primarily used for.
+Unlike memory locations, registers do not have addresses. Instructions refer to them by name. In the ◊keyword{x86_64 architecture}, the first eight general-purpose registers are named ◊x86asm{rax}, ◊x86asm{rbx}, ◊x86asm{rcx}, ◊x86asm{rdx}, ◊x86asm{rsi}, ◊x86asm{rdi}, ◊x86asm{rbp}, and ◊x86asm{rsp}, which stand for “◊em{accumulator}”, “◊em{base}”, “◊em{counter}”, “◊em{data}”, “◊em{source}”, “◊em{destination}”, “◊em{base pointer}”, and “◊em{stack pointer}”. The names came from what the designers of x86_64 first assumed people would mainly use them for, though today, most people use them interchangably. As a result, when they decided to add eight more general-purpose registers, the new registers were just numbered ◊x86asm{r8} through ◊x86asm{r15}.
 
 ◊section{Architectures define instruction sets}
 

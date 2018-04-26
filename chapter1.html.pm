@@ -108,7 +108,7 @@ Mind you that subtracting ◊math{◊var{n}} is the same thing as adding ◊math
 
 ◊aside{Don’t confuse the negative of a number with the ◊em{negative interpretation} of a number. The latter always has the exact same bit pattern as the number because it’s just another way of reading it. The negative of a number has a completely different bit pattern.}
 
-Subtraction-by-addition isn’t very useful if you don’t have an easy way of negating a number. Let’s go back to the three-digit decimal example. To get the negative of a three-digit decimal number ◊math{◊var{n}}, you have to compute ◊math{1000 − ◊var{n}}. This quantity is called the ◊keyword{ten’s complement} of the number. But doing ◊math{1000 − ◊var{n}} directly is hard because you have to borrow all the way out to the hundreds place. So instead, we do ◊math{999 − ◊var{n}}, and then add 1 later.
+Subtraction-by-addition isn’t very useful if you don’t have an easy way of negating a number. Let’s go back to the three-digit decimal example. To get the negative of a three-digit decimal number ◊math{◊var{n}}, you have to compute ◊math{1000 − ◊var{n}}. This quantity is called the ◊keyword{ten’s complement} of the number. But doing ◊math{1000 − ◊var{n}} directly is hard because you have to borrow all the way out to the thousands place. So instead, we do ◊math{999 − ◊var{n}}, and then add 1 later.
 
 ◊centered-ascii-figure{  9 9 9
 − 7 8 9
@@ -138,7 +138,7 @@ Doing it in binary is even easier because computing the ◊keyword{ones compleme
 
 ◊aside{What about zero, you ask? Zero is signless because its complement in any base is always itself. Don’t believe me? Try it!}
 
-Up until now, every 8 bit number has had two interpretations — a positive one, and a negative one. This is pretty silly, so we’ll define numbers with 1 as their most significant bit as negative, and numbers with 0 as their most significant bit as positive. For our purposes, zero rolls with the positives. We call this the ◊keyword{signed integer interpretation} of a binary value. The smallest byte value when viewed as a signed integer is ◊code{1000,0000}, or −128. The largest is ◊code{0111,1111}, or +127. Contrast with the unsigned integer interpretation which starts with ◊code{0000,0000}, or 0, and ends with ◊code{1111,1111}, or 255.
+Up until now, every 8 bit number has had two interpretations — a positive one, and a negative one. This is pretty silly, so we’ll define numbers with 1 as their most significant bit as negative, and numbers with 0 as their most significant bit as positive. (Or more precisely, non-negative, since the set of numbers that start with 0 includes zero.) We call this the ◊keyword{signed integer interpretation} of a binary value. The smallest byte value when viewed as a signed integer is ◊code{1000,0000}, or −128. The largest is ◊code{0111,1111}, or +127. Contrast with the unsigned integer interpretation which starts with ◊code{0000,0000}, or 0, and ends with ◊code{1111,1111}, or 255.
 
 ◊aside{Flipping the most significant bit of a signed byte adds 128 to its numeric value, mapping the range ◊math{[−128, 128) to [0, 256)}. Do you understand why?}
 
@@ -201,7 +201,7 @@ Just like unsigned integers, signed integers can overflow. However, in terms of 
 
 ◊section{Shifting multiplies and divides by the base}
 
-Just as adding a zero to the end of a decimal number multiplies it by 10, adding a zero to the end of a binary number multiplies it by 2. Similarly, just as removing a zero from the end of a decimal number divides it by 10, removing a zero from the end of a binary number divides it by 2. This works even if the least significant digit is not a zero, in which case the quotient is given and the remainder discarded. In computing, this operation is called ◊keyword{shifting}. Because numbers are written from left to right in English, adding zeroes to the end effectively shifts all the existing digits left, so we call this operation a ◊keyword{left shift}. Removing digits from the end has the opposite effect, so we call that operation a ◊keyword{right shift}. The symbols for a left and right shift are ‘<<’ and ‘>>’, respectively.
+Just as adding a zero to the end of a decimal number multiplies it by 10, adding a zero to the end of a binary number multiplies it by 2. Similarly, just as removing a zero from the end of a decimal number divides it by 10, removing a zero from the end of a binary number divides it by 2. This works even if the least significant digit is not a zero, in which case the quotient is given and the remainder discarded. In computing, this operation is called ◊keyword{shifting}. Because numbers are written from left to right in English, adding zeroes to the end effectively shifts all the incumbent digits left, so we call this operation a ◊keyword{left shift}. Removing digits from the end has the opposite effect, so we call that operation a ◊keyword{right shift}. The symbols for a left and right shift are ‘<<’ and ‘>>’, respectively.
 
 Shifts can add or remove multiple digits to a number, in which case the factor it’s multiplied or divided by is the base raised to the power of the magnitude of the shift. As you might expect, shifting left by ◊math{◊var{n}} is the same thing as shifting right by ◊math{◊var{−n}}, and vice versa.
 
@@ -322,7 +322,7 @@ Like logical right shifts for unsigned integers, arithmetic right shifts round s
 
 ◊section{Integer multiplication and division}
 
-Binary multiplication is pretty straightfoward compared to decimal multiplication. The same elementary school algorithm works in binary, except we don’t even need to do any multiplication — multiplying two binary numbers is just a matter of adding up left-shifted versions of one of the factors, corresponding to the 1 bits in the other factor. 
+Binary multiplication is pretty straightfoward compared to decimal multiplication. The same elementary school algorithm works in binary, except we don’t even need to do any multiplication — multiplying two binary numbers is just a matter of adding up left shifted versions of one of the factors, corresponding to the 1 bits in the other factor. 
 
 ◊centered-ascii-figure{  0 0 0 1 0 1 1 1 = 23
 × 0 0 0 0 1 0 1 1 = 11
@@ -347,23 +347,33 @@ Quotients and remainders are defined such that if ◊math{◊var{a}} is the divi
 
 ◊section{Boolean logic}
 
-Several operations are native to binary and have no analogues in decimal. These operations are called ◊keyword{boolean operations}. The ◊keyword{not} (‘¬’), ◊keyword{and} (‘∧’), ◊keyword{inclusive or} (‘∨’), and ◊keyword{exclusive or} (‘⊻’) operations are the four that we usually consider “primary” boolean operators, though in truth, all boolean operators can be expressed in terms of just two of them: one of ∧ or ∨, combined with one of ¬ or ⊻. This property is called ◊keyword{logical completeness}.
+Arithmetic operations like addition and multiplication are generalizable and exist in all bases. ◊keyword{Boolean operations}, on the other hand, are native to binary. They have no decimal analogues. Boolean operations operate on ◊keyword{boolean values}. There are only two boolean values — ◊math{true} and ◊math{false} — which are synonymous with 1 and 0, respectively. A boolean value, then, is really just another name for a bit.
 
-Not is a ◊keyword{unary operator}, meaning it takes only one ◊keyword{operand}. Not is defined as the opposite of whatever its operand is. So ¬0 is 1, and ¬1 is 0.
+◊aside{The word “negation” in a boolean context has nothing to do with negative numbers.}
+
+◊keyword{Negation} (‘¬’), ◊keyword{conjunction} (‘∧’), ◊keyword{inclusive disjunction} (‘∨’), and ◊keyword{exclusive disjunction} (‘⊻’) are the four operations we usually consider as “primary” boolean operations, though in truth, all boolean operations can be expressed in terms of just two of them: one of ∧ or ∨, combined with one of ¬ or ⊻. This property is called ◊keyword{logical completeness}. The operator ‘¬’ is pronounced “not”. The operator ‘∧’ is pronounced “and”, ‘∨’ is pronounced “or”, and ‘⊻’ is pronounced “xor”.
+
+Negation is a ◊keyword{unary operation}, meaning it takes only one ◊keyword{operand}. The negation of a boolean value is defined as its opposite value. So ◊math{¬true} is ◊math{false}, and ◊math{¬false} is ◊math{true}. Pretty straightforward.
 
 ◊aside{The word “binary” in this context just means “two” (as opposed to “one”.) It has nothing to do with base 2.}
 
-And, inclusive or, and exclusive or are ◊keyword{binary operators}, meaning they take two operands. (Addition, subtraction, multiplication, and division are all also binary operations.) 
+Conjunction, inclusive disjunction, and exclusive disjunction are ◊keyword{binary operations}, meaning they take two operands. (Addition, subtraction, multiplication, and division are all also binary operations.) We use inclusive disjunction way more often than its exclusive sibling, so we usually just refer to it as disjunction.
 
-And is defined as 1 if ◊em{both} operands are 1, and 0 otherwise. Inclusive or, which we usually just call “or”, is defined as 0 if ◊em{both} operands are 0, and 1 otherwise. This is the same as saying and is defined as 0 if ◊em{at least} one operand is 0, and or is defined as 1 if ◊em{at least} one operand is 1. 
+The conjunction of two values is defined as ◊math{true} if ◊em{both} operands are ◊math{true}, and ◊math{false} otherwise. The disjunction of two values is defined as ◊math{true} if ◊em{at least one} of the operands is ◊math{true}, and ◊math{false} otherwise. The exclusive disjunction of two values is defined as ◊math{true} if ◊em{exactly one} of the operands is ◊math{true}, and ◊math{false} otherwise. 
 
-Exclusive or, which we usually abbreviate as ◊keyword{xor}, is defined as 1 if exactly ◊em{one} of the operands is 1. (This implies the other operand ◊em{must} be 0.) Anything xored with itself yields 0.
+Conjunction, disjunction, and exclusive disjunction are all commutative. So ◊math{◊var{p} ∧ ◊var{q} ≡ ◊var{q} ∧ ◊var{p}}, ◊math{◊var{p} ∨ ◊var{q} ≡ ◊var{q} ∨ ◊var{p}}, and ◊math{◊var{p} ⊻ ◊var{q} ≡ ◊var{q} ⊻ ◊var{p}}.
 
-And, or, and xor are all commutative. So ◊math{◊var{p} ∧ ◊var{q} ≡ ◊var{q} ∧ ◊var{p}}, ◊math{◊var{p} ∨ ◊var{q} ≡ ◊var{q} ∨ ◊var{p}}, and ◊math{◊var{p} ⊻ ◊var{q} ≡ ◊var{q} ⊻ ◊var{p}}.
+As we alluded to earlier, conjunction and disjunction are actually redundant. The conjunction of two boolean values is the same as the negation of the disjunction of the negations of the same two boolean values. (Yes, you read that right.) 
 
-◊section{Bitwise and logical boolean operations}
+Here’s that sentence in symbols: ◊math{◊var{p} ∧ ◊var{q} ≡ ¬(¬◊var{p} ∨ ¬◊var{q})}. 
 
-Boolean operations can be performed on data values on a ◊keyword{bitwise} basis, applying the operator to each bit (or pair of bits) in the operand (or operands) independently.
+This fact is called ◊keyword{De Morgan’s Law}. Most people use De Morgan’s law every day without ever knowing it has a name. You probably already understand if you say you neither skipped lunch nor failed your CS exam, that’s the same thing as saying you ate lunch and passed your exam.
+
+Negation, as it turns out, is also redundant. The negation of a value can be expressed as the exclusive disjunction of the value, with the second operand set to ◊math{true}. The expression ◊math{◊var{p} ⊻ true} is ◊math{true} if ◊math{◊var{p}} is ◊math{false}, and ◊math{false} if ◊math{◊var{p}} is ◊math{true}. Exclusive disjunction, for its part, can be expressed in terms of negation, conjunction, and disjunction: ◊math{◊var{p} ⊻ ◊var{q} ≡ (◊var{p} ∨ ◊var{q}) ∧ ¬(◊var{p} ∧ ◊var{q})}.
+
+◊section{Bitwise operations}
+
+Boolean operations can be performed on multi-bit data values on a ◊keyword{bitwise} basis, applying the operation to each bit in the data value independently.
 
 ◊centered-ascii-figure{
 ¬ 0 1 0 1 1 0 0 1
@@ -389,8 +399,4 @@ Boolean operations can be performed on data values on a ◊keyword{bitwise} basi
   0 1 0 0 1 1 1 1
 }
 
-Bitwise boolean operations generally have no arithmetic meaning and are mainly used to manipulate bits within a data value. An exception is the ∧ operator, which can be used to take the modulo of a number if the modulus is a power of two. ◊code{0101,1001 ∧ 0000,1111 = 0000,1001} is equivalent to ◊math{89 mod 16 = 9}. Arithmetic right shift and and can be thought of as special cases of flooring division (integer division rounding towards negative infinity) and modulo.
-
-Boolean operations can also be performed on integers as whole units, treating all nonzero integers as being in an ◊keyword{equivalence class} with 1. Boolean operations performed in this way are called ◊keyword{logical boolean operations}, to contrast them with bitwise boolean operations. A logical operation doesn’t always give the same result as its corresponding bitwise operation on the same inputs. ◊code{0101,0101 ∧ 1010,1010} is 1 with a logical and (since both operands are nonzero), but 0 with a bitwise and (since no two corresponding bits are both 1.)
-
-Only ∧, ∨, and ¬ have well-defined logical forms. Nonequality (‘≠’) is usually taken as the logical version of ⊻, though there are alternative ways of generalizing ⊻ to the logical domain.
+Bitwise operations generally have no arithmetic meaning and are mainly used to manipulate bits within a data value. An exception is bitwise conjunction, which we can use to take the modulo of a number if the modulus is a power of two. ◊code{0101,1001 ∧ 0000,1111 = 0000,1001} is equivalent to ◊math{89 mod 16 = 9}. Arithmetic right shift and conjunction can then be thought of as special cases of flooring division (integer division rounding towards negative infinity) and modulo.

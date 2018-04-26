@@ -2,7 +2,7 @@
 
 ◊chapter[#:index "2"]{Memory and addressing}
 
-◊keyword{Memory} is one of the means by which computers store bytes. Memory is also referred to as ◊keyword{primary storage}. Memory can be thought of as an array of sequentially indexed cells, called ◊keyword{memory locations}, each of which can hold a single byte. This is, in fact, the formal definition of a byte — the size of a single memory location — which corresponds to 8 bits on almost all extant computer architectures.
+◊keyword{Memory} is one of the means by which computers store bytes. Memory is also referred to as ◊keyword{primary storage}. Memory can be thought of as an array of sequentially indexed cells, called ◊keyword{memory locations}, each of which can hold a single byte. This is, in fact, the formal definition of a byte — the size of a single memory location — which we know corresponds to 8 bits on almost all extant computer architectures.
 
 ◊table[#:class "memory-table-h"]{
     ◊memory-table-h-addresses{
@@ -13,7 +13,7 @@
     }
 }
 
-The indices of the storage units are called ◊keyword{memory addresses}. Operations on data in memory are defined by supplying both the operation to perform, and the address of the memory location to perform it on.
+The indices of the memory location are called ◊keyword{memory addresses}. Operations on data in memory are defined by supplying both the operation to perform, and the address of the memory location to perform it on.
 
 In concept, all memory locations can be accessed equally quickly. Though this is emphatically ◊em{not} true in practice, any memory location can nevertheless be accessed without traversing all the memory locations between it and the previously accessed location. Memory is sometimes called ◊keyword{random access memory}, or ◊keyword{RAM}, to emphasize this property.
 
@@ -23,7 +23,7 @@ In concept, all memory locations can be accessed equally quickly. Though this is
 
 Integers are ◊strong{countable}, which means if you have an integer ◊math{◊var{n}}, you can use it to refer to the ◊math{◊var{n}}th thing in a sequence. That’s because integers have an inherent ◊keyword{predecessor} and ◊keyword{successor}. It makes sense to ask what comes after 22, but it wouldn’t make much sense to ask what comes after 22.319891 or any other fraction.
 
-This property is important because it means we can use integers to represent memory addresses. These integers are called ◊strong{pointers}. The range of addresses that pointers can represent is known as the ◊keyword{address space}. 8-bit pointers have a 256-byte address space.
+This property is important because it means we can use integers to represent memory addresses. These integers are called ◊strong{pointers}. The range of addresses that a pointer can represent is known as the ◊keyword{address space}. 8-bit pointers have a 256-byte address space.
 
 ◊section{Multibyte values}
 
@@ -78,6 +78,8 @@ In contrast, a ◊keyword{little-endian} integer stores its ◊em{least} signifi
 ◊aside{The address of a multibyte value is the address of its first byte (the byte with the lowest address).}
 
 Whether a value is big- or little-endian does not affect the order of the bits inside each byte. The bits in the first byte of a little-endian integer are exactly the same as the bits in the last byte of a big-endian integer. That said, you should think of multibyte values as ◊keyword{atomic}, in other words, as single, opaque chunks. Never try to split or splice a multibyte integer without knowing the byte order of the platform.
+
+Bit shifts on multibyte values are defined abstractly, so the same shift gives the same numerical result regardless of the platform endianness. Left shifting a little-endian integer moves bits from low addresses to high addresses, not high addresses to low addresses. This yields a larger integer (as non-overflowing left shifts should), even though the bits are moving right in the diagram.
 
 Most computer architectures are natively little-endian. Little-endian has useful properties which advantage it over big-endian. A small integer stored in a large integer format has all its meaningful bits in its leading bytes. This means the same number can be read off as different-sized integers from the same address. (A number stored as an 8-byte big-endian integer would have to be read at offset +7 to read it as an 8-bit integer, +6 to view it as a 16-bit integer, and +4 to view it as a 32-bit integer.)
 
@@ -135,7 +137,7 @@ Almost all modern processors can retrieve multiple bytes of memory at a time. Ot
     }
 }
 
-Failing to align a multibyte integer with a memory slice can have a negative impact on performance, since the integer will be split across two slices, and so the CPU will have to retrieve two slices instead of one, as well as perform the appropriate bit shifts and fuse the integer back together. An some architectures, misalignment can even cause a processor error.
+Failing to align a multibyte integer with a memory slice can hurt performance, since the integer will be split across two slices, and so the CPU will have to retrieve two slices instead of one, as well as perform the appropriate bit shifts and fuse the integer back together. An some architectures, misalignment can even cause a processor error.
 
 Correct alignment can cause empty spaces called ◊keyword{padding bytes} to appear between different-sized values. For example, a padding byte appears between these three integers below.
 
