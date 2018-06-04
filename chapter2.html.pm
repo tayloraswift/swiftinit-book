@@ -4,12 +4,12 @@
 
 ◊keyword{Memory} is one of the means by which computers store bytes. Memory is also referred to as ◊keyword{primary storage}. Memory can be thought of as an array of sequentially indexed cells, called ◊keyword{memory locations}, each of which can hold a single byte. This is, in fact, the formal definition of a byte — the size of a single memory location — which we know corresponds to 8 bits on almost all extant computer architectures.
 
-◊table[#:class "memory-table-h"]{
-    ◊memory-table-h-addresses{
+◊table[#:class "memory-table"]{
+    ◊tr[#:class "addresses"]{
         ◊td{0} ◊td{1} ◊td{2} ◊td{3} ◊td{4} ◊td{5} ◊td{6} ◊td{7}  ◊td-invisible{} 
     }
-    ◊memory-table-h-cells{
-        ◊td{???} ◊td{???} ◊td{???} ◊td{???} ◊td{???} ◊td{???} ◊td{???} ◊td{???} ◊td-ellipsis{} 
+    ◊tr{
+        ◊td{???} ◊td{???} ◊td{???} ◊td{???} ◊td{???} ◊td{???} ◊td{???} ◊td{???} ◊td[#:class "ellipsis"]{} 
     }
 }
 
@@ -35,43 +35,43 @@ Instead, most architectures string multiple 8-bit bytes together to make longer 
 
 ◊aside{From now on, you’ll start seeing raw binary values and memory addresses written in ◊keyword{hexadecimal} (base 16) notation instead of 0s and 1s. Each hexadecimal digit represents four bits. In this book, hexadecimal values will always be prefixed with the letter ◊swift{x}.}
 
-◊table[#:class "memory-table-h"]{
-    ◊memory-table-h-addresses{
-        ◊td-invisible{} ◊td{} ◊td{◊strong{x}} ◊td[#:colspan "2"]{◊strong{y}} ◊td[#:colspan "4"]{◊strong{z}} ◊td-invisible{}
+◊table[#:class "memory-table horizontal"]{
+    ◊tr[#:class "addresses"]{
+        ◊td{} ◊td{} ◊td{◊strong{x}} ◊td[#:colspan "2"]{◊strong{y}} ◊td[#:colspan "4"]{◊strong{z}} ◊td{}
     }
-    ◊memory-table-h-addresses{
-        ◊td-invisible{} ◊td{x66} ◊td{x67} ◊td{x68} ◊td{x69} ◊td{x6A} ◊td{x6B} ◊td{x6C} ◊td{x6D} ◊td-invisible{}
+    ◊tr[#:class "addresses"]{
+        ◊td{} ◊td{x66} ◊td{x67} ◊td{x68} ◊td{x69} ◊td{x6A} ◊td{x6B} ◊td{x6C} ◊td{x6D} ◊td{}
     }
-    ◊memory-table-h-cells{
-        ◊td-ellipsis{} ◊td[#:class "empty"]{} ◊td{xA1} ◊td[#:colspan "2"]{xBADD} ◊td[#:colspan "4"]{xCAFEBABE} ◊td-ellipsis{}
+    ◊tr{
+        ◊td[#:class "ellipsis"]{} ◊td[#:class "empty"]{} ◊td{xA1} ◊td[#:colspan "2"]{xBADD} ◊td[#:colspan "4"]{xCAFEBABE} ◊td[#:class "ellipsis"]{}
     }
 }
 
 The way the bits of a multibyte integer are distributed among its constituent bytes is called its ◊keyword{endianness} or ◊keyword{byte order}. A ◊keyword{big-endian} integer stores its most significant bits first.
 
-◊table[#:class "memory-table-h"]{
-    ◊memory-table-h-addresses{
-        ◊td-invisible{} ◊td{} ◊td{◊strong{x}} ◊td[#:colspan "2"]{◊strong{y} ◊br{}(big-end.)} ◊td[#:colspan "4"]{◊strong{z} ◊br{}(big-end.)} ◊td-invisible{}
+◊table[#:class "memory-table horizontal"]{
+    ◊tr[#:class "addresses"]{
+        ◊td{} ◊td{} ◊td{◊strong{x}} ◊td[#:colspan "2"]{◊strong{y} ◊br{}(big-end.)} ◊td[#:colspan "4"]{◊strong{z} ◊br{}(big-end.)} ◊td{}
     }
-    ◊memory-table-h-addresses{
-        ◊td-invisible{} ◊td{x66} ◊td{x67} ◊td{x68} ◊td{x69} ◊td{x6A} ◊td{x6B} ◊td{x6C} ◊td{x6D} ◊td-invisible{}
+    ◊tr[#:class "addresses"]{
+        ◊td{} ◊td{x66} ◊td{x67} ◊td{x68} ◊td{x69} ◊td{x6A} ◊td{x6B} ◊td{x6C} ◊td{x6D} ◊td{}
     }
-    ◊memory-table-h-cells{
-        ◊td-ellipsis{} ◊td[#:class "empty"]{} ◊td{xA1} ◊td{xBA} ◊td{xDD} ◊td{xCA} ◊td{xFE} ◊td{xBA} ◊td{xBE} ◊td-ellipsis{}
+    ◊tr{
+        ◊td[#:class "ellipsis"]{} ◊td[#:class "empty"]{} ◊td{xA1} ◊td{xBA} ◊td{xDD} ◊td{xCA} ◊td{xFE} ◊td{xBA} ◊td{xBE} ◊td[#:class "ellipsis"]{}
     }
 }
 
 In contrast, a ◊keyword{little-endian} integer stores its ◊em{least} significant bits first. 
 
-◊table[#:class "memory-table-h"]{
-    ◊memory-table-h-addresses{
-        ◊td-invisible{} ◊td{} ◊td{◊strong{x}} ◊td[#:colspan "2"]{◊strong{y} ◊br{}(little-end.)} ◊td[#:colspan "4"]{◊strong{z} ◊br{}(little-end.)} ◊td-invisible{}
+◊table[#:class "memory-table horizontal"]{
+    ◊tr[#:class "addresses"]{
+        ◊td{} ◊td{} ◊td{◊strong{x}} ◊td[#:colspan "2"]{◊strong{y} ◊br{}(little-end.)} ◊td[#:colspan "4"]{◊strong{z} ◊br{}(little-end.)} ◊td{}
     }
-    ◊memory-table-h-addresses{
-        ◊td-invisible{} ◊td{x66} ◊td{x67} ◊td{x68} ◊td{x69} ◊td{x6A} ◊td{x6B} ◊td{x6C} ◊td{x6D} ◊td-invisible{}
+    ◊tr[#:class "addresses"]{
+        ◊td{} ◊td{x66} ◊td{x67} ◊td{x68} ◊td{x69} ◊td{x6A} ◊td{x6B} ◊td{x6C} ◊td{x6D} ◊td{}
     }
-    ◊memory-table-h-cells{
-        ◊td-ellipsis{} ◊td[#:class "empty"]{} ◊td{xA1} ◊td{xDD} ◊td{xBA} ◊td{xBE} ◊td{xBA} ◊td{xFE} ◊td{xCA} ◊td-ellipsis{}
+    ◊tr{
+        ◊td[#:class "ellipsis"]{} ◊td[#:class "empty"]{} ◊td{xA1} ◊td{xDD} ◊td{xBA} ◊td{xBE} ◊td{xBA} ◊td{xFE} ◊td{xCA} ◊td[#:class "ellipsis"]{}
     }
 }
 
@@ -89,51 +89,51 @@ Big-endian is relatively rare. It’s most common in data formats intended for t
 
 Almost all modern processors can retrieve multiple bytes of memory at a time. Otherwise it would take a long time to get all eight bytes of a 64-bit integer. However, they can’t just grab any two or four or eight bytes. They can only access slices of memory situated on multiples of specific powers of two.
 
-◊table[#:class "memory-table-h"]{
-    ◊memory-table-h-addresses{
+◊table[#:class "memory-table horizontal"]{
+    ◊tr[#:class "addresses"]{
         ◊td[#:colspan "10"]{1-byte access}
     }
-    ◊memory-table-h-addresses{
-        ◊td-invisible{} ◊td{x28} ◊td{x29} ◊td{x2A} ◊td{x2B} ◊td{x2C} ◊td{x2D} ◊td{x2E} ◊td{x2F} ◊td-invisible{}
+    ◊tr[#:class "addresses"]{
+        ◊td{} ◊td{x28} ◊td{x29} ◊td{x2A} ◊td{x2B} ◊td{x2C} ◊td{x2D} ◊td{x2E} ◊td{x2F} ◊td{}
     }
-    ◊memory-table-h-cells{
-        ◊td-ellipsis{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td-ellipsis{}
+    ◊tr{
+        ◊td[#:class "ellipsis"]{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td[#:class "empty"]{} ◊td[#:class "ellipsis"]{}
     }
-}
+    
+    ◊tr[#:class "space"]{◊td{}}
 
-◊table[#:class "memory-table-h"]{
-    ◊memory-table-h-addresses{
+    ◊tr[#:class "addresses"]{
         ◊td[#:colspan "10"]{2-byte access}
     }
-    ◊memory-table-h-addresses{
-        ◊td-invisible{} ◊td{x28} ◊td{x29} ◊td{x2A} ◊td{x2B} ◊td{x2C} ◊td{x2D} ◊td{x2E} ◊td{x2F} ◊td-invisible{}
+    ◊tr[#:class "addresses"]{
+        ◊td{} ◊td{x28} ◊td{x29} ◊td{x2A} ◊td{x2B} ◊td{x2C} ◊td{x2D} ◊td{x2E} ◊td{x2F} ◊td{}
     }
-    ◊memory-table-h-cells{
-        ◊td-ellipsis{} ◊td[#:class "empty" #:colspan "2"]{} ◊td[#:class "empty" #:colspan "2"]{} ◊td[#:class "empty" #:colspan "2"]{} ◊td[#:class "empty" #:colspan "2"]{} ◊td-ellipsis{}
+    ◊tr{
+        ◊td[#:class "ellipsis"]{} ◊td[#:class "empty" #:colspan "2"]{} ◊td[#:class "empty" #:colspan "2"]{} ◊td[#:class "empty" #:colspan "2"]{} ◊td[#:class "empty" #:colspan "2"]{} ◊td[#:class "ellipsis"]{}
     }
-}
 
-◊table[#:class "memory-table-h"]{
-    ◊memory-table-h-addresses{
+    ◊tr[#:class "space"]{◊td{}}
+
+    ◊tr[#:class "addresses"]{
         ◊td[#:colspan "10"]{4-byte access}
     }
-    ◊memory-table-h-addresses{
-        ◊td-invisible{} ◊td{x28} ◊td{x29} ◊td{x2A} ◊td{x2B} ◊td{x2C} ◊td{x2D} ◊td{x2E} ◊td{x2F} ◊td-invisible{}
+    ◊tr[#:class "addresses"]{
+        ◊td{} ◊td{x28} ◊td{x29} ◊td{x2A} ◊td{x2B} ◊td{x2C} ◊td{x2D} ◊td{x2E} ◊td{x2F} ◊td{}
     }
-    ◊memory-table-h-cells{
-        ◊td-ellipsis{} ◊td[#:class "empty" #:colspan "4"]{} ◊td[#:class "empty" #:colspan "4"]{} ◊td-ellipsis{}
+    ◊tr{
+        ◊td[#:class "ellipsis"]{} ◊td[#:class "empty" #:colspan "4"]{} ◊td[#:class "empty" #:colspan "4"]{} ◊td[#:class "ellipsis"]{}
     }
-}
-
-◊table[#:class "memory-table-h"]{
-    ◊memory-table-h-addresses{
+    
+    ◊tr[#:class "space"]{◊td{}}
+    
+    ◊tr[#:class "addresses"]{
         ◊td[#:colspan "10"]{8-byte access}
     }
-    ◊memory-table-h-addresses{
-        ◊td-invisible{} ◊td{x28} ◊td{x29} ◊td{x2A} ◊td{x2B} ◊td{x2C} ◊td{x2D} ◊td{x2E} ◊td{x2F} ◊td-invisible{}
+    ◊tr[#:class "addresses"]{
+        ◊td{} ◊td{x28} ◊td{x29} ◊td{x2A} ◊td{x2B} ◊td{x2C} ◊td{x2D} ◊td{x2E} ◊td{x2F} ◊td{}
     }
-    ◊memory-table-h-cells{
-        ◊td-ellipsis{} ◊td[#:class "empty" #:colspan "8"]{} ◊td-ellipsis{}
+    ◊tr{
+        ◊td[#:class "ellipsis"]{} ◊td[#:class "empty" #:colspan "8"]{} ◊td[#:class "ellipsis"]{}
     }
 }
 
@@ -141,12 +141,12 @@ Failing to align a multibyte integer with a memory slice can hurt performance, s
 
 Correct alignment can cause empty spaces called ◊keyword{padding bytes} to appear between different-sized values. For example, a padding byte appears between these three integers below.
 
-◊table[#:class "memory-table-h"]{
-    ◊memory-table-h-addresses{
-        ◊td-invisible{} ◊td{x28} ◊td{x29} ◊td{x2A} ◊td{x2B} ◊td{x2C} ◊td{x2D} ◊td{x2E} ◊td{x2F} ◊td-invisible{}
+◊table[#:class "memory-table horizontal"]{
+    ◊tr[#:class "addresses"]{
+        ◊td{} ◊td{x28} ◊td{x29} ◊td{x2A} ◊td{x2B} ◊td{x2C} ◊td{x2D} ◊td{x2E} ◊td{x2F} ◊td{}
     }
-    ◊memory-table-h-cells{
-        ◊td-ellipsis{} ◊td[#:colspan "2"]{16-bit} ◊td{8-bit} ◊td[#:class "empty"]{}  ◊td[#:colspan "4"]{32-bit} ◊td-ellipsis{}
+    ◊tr{
+        ◊td[#:class "ellipsis"]{} ◊td[#:colspan "2"]{16-bit} ◊td{8-bit} ◊td[#:class "empty"]{}  ◊td[#:colspan "4"]{32-bit} ◊td[#:class "ellipsis"]{}
     }
 }
 

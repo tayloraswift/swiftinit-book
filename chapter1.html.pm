@@ -10,7 +10,7 @@ We can use bits as ◊keyword{digits} to form a number system. This number syste
 
 Just as we can string together multiple decimal digits to represent numbers bigger than 9, we can string together multiple bits to represent numbers bigger than 1. You might remember from elementary school that digits have ◊keyword{place values} depending on their positions in the sequence. In decimal, the place values are ones, tens, hundreds, thousands, and so on. In binary, the place values are ones, twos, fours, eights, sixteens, and so on.
 
-The digit with the smallest place value is called the ◊keyword{least significant digit}, and the digit with the largest place value is called the ◊keyword{most significant digit}. In English, we usually write the least significant digit on the right and the most significant digit on the left.
+The digit with the smallest place value is called the ◊keyword{least significant digit}, and the digit with the largest place value is called the ◊keyword{most significant digit}. Sometimes the phrases ◊keyword{low digits} and ◊keyword{high digits} are used to refer to the less significant and the more significant digits, respectively, instead. In English, we usually write the least significant digit on the right and the most significant digit on the left.
 
 ◊table[#:class "place-table"]{
     ◊tr{
@@ -79,7 +79,7 @@ Subtraction is a lot harder than addition, mostly because you have to borrow, th
 
 Imagine that you have space for three decimal digits — you can count from 0 all the way to 999. One way to subtract 1 from an arbitrary three-digit decimal number, ◊em{without actually doing subtraction}, is to ◊em{add} 999 to it. For example, if you had the number 25, adding 999 to it would give you 1024. But since you don’t have a thousands place, you just end up with 24.
 
-This works because adding 999 is the same as adding 1000 and subtracting 1. Integer overflow then subtracts 1000 from the total, so in the end you are effectively subtracting 1. Similarly, you can subtract 2 by adding 998, 3 by adding 997, and so forth.
+This works because adding 999 is the same as adding 1000 and subtracting 1. Integer overflow then subtracts 1000 from the total, so in the end you effectively subtracted 1. Similarly, you can subtract 2 by adding 998, 3 by adding 997, and so forth.
 
 ◊centered-ascii-figure{   NNN + 999
 =  NNN + 1000 − 1
@@ -102,7 +102,7 @@ In other words, to subtract a number ◊math{◊var{n}}, you add ◊math{◊var{
 
 ◊aside{This should come naturally to any of you who know ◊keyword{modular arithmetic}. If you haven’t figured it out already, the ◊keyword{modulus} of a binary number with ◊math{◊var{n}} bits is always ◊math{2◊exponent{◊var{n}}}.}
 
-Mind you that subtracting ◊math{◊var{n}} is the same thing as adding ◊math{−◊var{n}}. And since we just established that subtracting ◊math{◊var{n}} is also the same thing as adding ◊math{◊var{base} ◊exponent{◊var{digits}} − ◊var{n}}, that implies that ◊math{−◊var{n} = ◊var{base} ◊exponent{◊var{digits}} − ◊var{n}}. Now we have ◊em{two} ways of interpreting any binary number. We can interpret the 8 bit number ◊code{0101,1001} as the positive number ◊math{89}, or we can interpret it as the negative number ◊math{89 − 256 = −167}.
+Mind you that subtracting ◊math{◊var{n}} is the same thing as adding ◊math{−◊var{n}}. And since we just established that subtracting ◊math{◊var{n}} is also the same thing as adding ◊math{◊var{base} ◊exponent{◊var{digits}} − ◊var{n}}, that implies that ◊math{−◊var{n}} equals ◊math{◊var{base} ◊exponent{◊var{digits}} − ◊var{n}}. Now we have ◊em{two} ways of interpreting any binary number. We can interpret the 8 bit number ◊code{0101,1001} as the positive number ◊math{89}, or we can interpret it as the negative number ◊math{89 − 256 = −167}.
 
 ◊section{Negate numbers using the two’s complement}
 
@@ -271,7 +271,7 @@ Like addition and subtraction, left shifts can overflow.
     }
 }
 
-In fact, shifting an integer by an amount greater to or equal to its length will always result in 0, since all of its original bits will have been displaced with zeroes. This is called an ◊keyword{overshift}. 
+In fact, shifting an integer by an amount greater to or equal to its length will always result in 0, since all of its original bits will have been displaced by zeroes. This is called an ◊keyword{overshift}. 
 
 Right shifting signed integers involves some subtlety. Although replacing the removed digits on the right with zeroes on the left works fine for unsigned integers, weird things happen when you try to right shift signed integers. 
 
@@ -318,7 +318,7 @@ The zeroes that appear on the left side of the bit pattern when the value is rig
 
 This kind of padding is called a ◊keyword{sign-extension}, or ◊keyword{SEXT}. (Yes, I know.) To differentiate between the two methods of right shifting, we call the zero-extending version a ◊keyword{logical right shift}, and the sign-extending version an ◊keyword{arithmetic right shift}. Logical right shifts are appropriate for unsigned values, while arithmetic right shifts are appropriate for signed values.
 
-Like logical right shifts for unsigned integers, arithmetic right shifts round signed integers down (towards negative infinity.) So ◊math{−89 >> 1} is −45, not −44.
+Like logical right shifts for unsigned integers, arithmetic right shifts round signed integers down (towards negative infinity.) So ◊math{−89 >> 1} is −45, not −44. It follows that an arithmetic right overshift always produces -1 (the all-ones bit pattern), and not 0. 
 
 ◊section{Integer multiplication and division}
 
@@ -337,7 +337,7 @@ Binary multiplication is pretty straightfoward compared to decimal multiplicatio
 
 As you can imagine, integer multiplication overflows pretty easily. 
 
-Multiplication is more complex to implement in hardware than addition is, but the multipliers in most processors are about as fast as the adders. Integer division, on the other hand, is far more complicated than either multiplication or addition, and is usually much slower than multiplication.
+Multiplication is more complex to implement in hardware than addition is, but the multipliers in most processors are about as fast as the adders. Integer division, on the other hand, is far more complicated than either multiplication or addition, and is usually much slower than multiplication. We won’t bother going over the algorithm here — it’s not important in the slightest.
 
 Integer dividers usually yield both the ◊keyword{quotient} and ◊keyword{remainder} at the same time. So the remainder operation (‘%’) is actually performed by the same circuit as the quotient operation (‘/’).
 
@@ -369,11 +369,11 @@ Here’s that sentence in symbols: ◊math{◊var{p} ∧ ◊var{q} ≡ ¬(¬◊v
 
 This fact is called ◊keyword{De Morgan’s Law}. Most people use De Morgan’s law every day without ever knowing it has a name. You probably already understand if you say you neither skipped lunch nor failed your CS exam, that’s the same thing as saying you ate lunch and passed your exam.
 
-Negation, as it turns out, is also redundant. The negation of a value can be expressed as the exclusive disjunction of the value, with the second operand set to ◊math{true}. The expression ◊math{◊var{p} ⊻ true} is ◊math{true} if ◊math{◊var{p}} is ◊math{false}, and ◊math{false} if ◊math{◊var{p}} is ◊math{true}. Exclusive disjunction, for its part, can be expressed in terms of negation, conjunction, and disjunction: ◊math{◊var{p} ⊻ ◊var{q} ≡ (◊var{p} ∨ ◊var{q}) ∧ ¬(◊var{p} ∧ ◊var{q})}.
+Negation, as it turns out, is also redundant. The negation of a value can be expressed as the exclusive disjunction of the value, with the second operand set to ◊math{true}. The expression ◊math{◊var{p} ⊻ true} is ◊math{true} if ◊math{◊var{p}} is ◊math{false}, and ◊math{false} if ◊math{◊var{p}} is ◊math{true}. Exclusive disjunction, for its part, can be expressed in terms of negation, conjunction, and disjunction: ◊math{◊var{p} ⊻ ◊var{q} ≡ (◊var{p} ∨ ◊var{q}) ∧ ¬(◊var{p} ∧ ◊var{q})}. That expression looks scary until you realize it’s just saying that an exclusive disjunction is the same as an inclusive disjunction, excluding the case where both inputs are true, which is how most people remember it anyway.
 
 ◊section{Bitwise operations}
 
-Boolean operations can be performed on multi-bit data values on a ◊keyword{bitwise} basis, applying the operation to each bit in the data value independently.
+Boolean operations can be performed on multi-bit data values on a ◊keyword{bitwise} basis, applying the operation to each bit in the data value independently. 
 
 ◊centered-ascii-figure{
 ¬ 0 1 0 1 1 0 0 1
@@ -399,4 +399,6 @@ Boolean operations can be performed on multi-bit data values on a ◊keyword{bit
   0 1 0 0 1 1 1 1
 }
 
-Bitwise operations generally have no arithmetic meaning and are mainly used to manipulate bits within a data value. An exception is bitwise conjunction, which we can use to take the modulo of a number if the modulus is a power of two. ◊code{0101,1001 ∧ 0000,1111 = 0000,1001} is equivalent to ◊math{89 mod 16 = 9}. Arithmetic right shift and conjunction can then be thought of as special cases of flooring division (integer division rounding towards negative infinity) and modulo.
+Bitwise operations generally have no direct arithmetic meaning and are mainly used to manipulate bits within a data value. An exception is bitwise conjunction, which we can use to take the modulo of a number if the modulus is a power of two. ◊code{0101,1001 ∧ 0000,1111 = 0000,1001} is equivalent to ◊math{89 mod 16 = 9}. Arithmetic right shift and conjunction can then be thought of as special cases of flooring division (integer division rounding towards negative infinity) and modulo. 
+
+The constant ◊code{0000,1111} that we used to filter out the high four of the other input is called a ◊keyword{mask}, and the whole operation is a type of ◊keyword{masking}. Masking only refers to selectively filtering out bits in a data value, and modulo is only one of the things it can be used for. 

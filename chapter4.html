@@ -1,0 +1,138 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Code and the stack</title>
+    <link rel="stylesheet" type="text/css" media="all" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css?family=Unica+One|Noticia+Text:400,400i,700,700i|Fira+Mono:400,700,&amp;subset=latin-ext" rel="stylesheet">
+    <link rel="stylesheet" href="highlight/styles/github.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="highlight/highlight.pack.js"></script>
+    <script>
+        $(document).ready(function()
+        {
+          $('code.x86asm').each(function(i, block)
+          {
+            hljs.highlightBlock(block);
+          });
+          $('code.swift').each(function(i, block)
+          {
+            hljs.highlightBlock(block);
+          });
+          $('pre.x86asm').each(function(i, block)
+          {
+            hljs.highlightBlock(block);
+          });
+        });
+    </script>
+</head>
+<body>
+    <a class="nav-triangle-left" href="chapter3.html"><div>Prev</div></a>
+
+
+    <div class="content-container">
+        <div class="content">
+            <div class="chapter-header"><div class="chapter-number">4</div><h1>Code and the stack</h1></div><p>Assembly instructions can be encoded in binary as <keyword>machine code</keyword>. Machine code is quite unintelligible to humans, so the translation from assembly mnemonics to binary machine instructions is done by tools called <keyword>assemblers</keyword>. Programs that have been assembled into machine code are called <keyword>binaries</keyword>.</p><p>The following is an example of an x86_64 instruction encoded in machine code.</p><table class="segmented-box"><tr class="header"><td class="invisible">addq</td> <td class="invisible"></td> <td class="invisible">%rax,</td> <td class="invisible">%rcx</td></tr>
+<tr><td>0100100000000001</td> <td>11</td> <td>000</td> <td>001</td></tr></table><p>The long part in the beginning is the <keyword>opcode</keyword>, which in this case corresponds to an <code class="x86asm">addq</code> instruction. The two triplets of bits at the end correspond to register operands. In x86_64, <code>rax</code> through <code>rdi</code> are numbered <code>000</code> through <code>111</code>. (The <code>r8</code> through <code>r15</code> registers are encoded slightly differently.)</p><p>Machine instructions in x86_64 are <keyword>variable length</keyword>. They are usually 1 to 6 bytes long, though they can be up to 15 bytes long in some cases, mainly when the instruction contains a long immediate operand.</p><p>Don’t bother memorizing the details of machine code. It’s not important. What’s important is that binary machine code can be stored in memory for the processor to fetch and execute directly as machine instructions.</p><h2>Memory areas</h2><p>Computers today generally execute binaries by setting aside a minimum of two areas in memory. The first area, called the <keyword>code segment</keyword>, stores the <keyword>program text</keyword>, the machine instructions in the binaries. The second area is the <keyword>stack area</keyword>, memory for the program to use in its calculations.</p><p>Instructions that touch memory almost always operate on the stack area or areas similar to the stack area we haven’t discussed yet. Programs, called <keyword>self-modifying programs</keyword>, that change memory in their own program text exist, but are extremely rare and are generally considered a form of art rather than a practical type of program. In fact, the operating system usually sets the code segment to read-only, which prevents the program from modifying its text.</p><h2>Instruction cycles and the instruction pointer</h2><p>Processors contain an <keyword>instruction pointer</keyword> register which holds the address of an instruction in memory. On each <keyword>instruction cycle</keyword>, the processor loads the instruction referenced by the pointer from memory and executes it. The instruction pointer register is called <code>rip</code> in x86_64.</p><p>The <code>rip</code> register is a <keyword>special-purpose register</keyword>. Unlike general purpose registers, special-purpose registers can only be accessed by specific instructions, so you can’t use <code class="x86asm">movq</code> to load or read <code>rip</code>. (Though you <em>can</em> use it as a base register in an addressing mode.)</p><p>For almost all instructions, the processor automatically increments the instruction pointer by the length of the instruction. This lets the processor load and execute instructions one after another in memory.</p><table class="memory-table vertical"><tr><td class="invisible">rip 1 -&gt;</td>
+<td class="addresses">x0</td>
+<td class="merge-down">x48</td> <td class="invisible pad-left">movq  %rcx, %rax</td></tr>
+<tr><td class="invisible" rowspan="2"></td>
+<td class="addresses">x1</td>
+<td class="merge-down">x89</td></tr>
+<tr><td class="addresses">x2</td>
+<td>xC8</td></tr>
+
+<tr><td class="invisible">rip 2 -&gt;</td>
+<td class="addresses">x3</td>
+<td class="merge-down">x48</td> <td class="invisible pad-left">sarq  $63 , %rcx</td></tr>
+<tr><td class="invisible" rowspan="3"></td>
+<td class="addresses">x4</td>
+<td class="merge-down">xC1</td></tr>
+<tr><td class="addresses">x5</td>
+<td class="merge-down">xF9</td></tr>
+<tr><td class="addresses">x6</td>
+<td>x3F</td></tr>
+
+<tr><td class="invisible">rip 3 -&gt;</td>
+<td class="addresses">x7</td>
+<td class="merge-down">x48</td> <td class="invisible pad-left">xorq  %rcx, %rax</td></tr>
+<tr><td class="invisible" rowspan="2"></td>
+<td class="addresses">x8</td>
+<td class="merge-down">x31</td></tr>
+<tr><td class="addresses">x9</td>
+<td>xC8</td></tr>
+
+<tr><td class="invisible">rip 4 -&gt;</td>
+<td class="addresses">xA</td>
+<td class="merge-down">x48</td> <td class="invisible pad-left">subq  %rcx, %rax</td></tr>
+<tr><td class="invisible" rowspan="2"></td>
+<td class="addresses">xB</td>
+<td class="merge-down">x29</td></tr>
+<tr><td class="addresses">xC</td>
+<td>xC8</td></tr></table><p>The exceptions are <keyword>control transfer instructions</keyword>, which set the instruction pointer explicitly.</p><h2>Jumps</h2><p><keyword>Jump instructions</keyword> are the simplest control transfer instructions — they simply load <code>rip</code> with whatever their operands evaluate to, causing the processor to move to an arbitrary location in the program text instead of advancing to the next instruction in memory. The mnemonic for a basic, unconditional jump instruction is <code>jmp</code>.</p><p>Jumps can be <keyword>direct</keyword> or <keyword>indirect</keyword>. Direct jumps add a constant offset into the instruction pointer and so always transfer program execution to a specific spot in the program text. Indirect jumps load the instruction pointer with a value stored either in a register or in memory and can be used to transfer program execution to a variable position in the program text.</p><pre class="x86-prototype"><keyword>jmp</keyword> address</pre><p>Performs a direct jump to <code>address</code>.</p><p><em>Example:</em> <code class="x86asm">jmp 89</code></p><p>The x86_64 syntax for direct jump instructions is a little weird. Direct jump operands can be thought of as immediate values, though they are written without the <code>$</code> prefix. Direct jumps also don’t come in different sizes, so it’s <code>jmp 21</code>, not <code>jmpq 21</code>.</p><table class="memory-table vertical"><tr><td class="addresses">x0</td>
+<td class="merge-down">x48</td> <td class="invisible pad-left">movq  %rcx, %rax</td></tr>
+<tr><td class="addresses">x1</td>
+<td class="merge-down">x89</td></tr>
+<tr><td class="addresses">x2</td>
+<td>xC8</td></tr>
+
+<tr><td class="addresses">x3</td>
+<td class="merge-down">x48</td> <td class="invisible pad-left">sarq  $63 , %rcx</td></tr>
+<tr><td class="addresses">x4</td>
+<td class="merge-down">xC1</td></tr>
+<tr><td class="addresses">x5</td>
+<td class="merge-down">xF9</td></tr>
+<tr><td class="addresses">x6</td>
+<td>x3F</td></tr>
+
+<tr><td class="addresses">x7</td>
+<td class="merge-down">x48</td> <td class="invisible pad-left">xorq  %rcx, %rax</td></tr>
+<tr><td class="addresses">x8</td>
+<td class="merge-down">x31</td></tr>
+<tr><td class="addresses">x9</td>
+<td>xC8</td></tr>
+
+<tr><td class="addresses">xA</td>
+<td class="merge-down">x48</td> <td class="invisible pad-left">subq  %rcx, %rax</td></tr>
+<tr><td class="addresses">xB</td>
+<td class="merge-down">x29</td></tr>
+<tr><td class="addresses">xC</td>
+<td>xC8</td></tr>
+
+<tr><td class="addresses">xD</td>
+<td class="merge-down">xE9</td> <td class="invisible pad-left">jmp   0x07</td></tr>
+<tr><td class="addresses">xE</td>
+<td class="merge-down">xF5</td></tr>
+<tr><td class="addresses">xF</td>
+<td class="merge-down">xFF</td></tr>
+<tr><td class="addresses">x10</td>
+<td class="merge-down">xFF</td></tr>
+<tr><td class="addresses">x11</td>
+<td>xFF</td></tr></table><p>In this example, we’ve added a <code class="x86asm">jmp 0x07</code> instruction to the end of the absolute value assembly from Chapter 3. This will make it so the next instruction the processor executes after the <code>jmp</code> instruction is the <code class="x86asm">xorq %rcx, %rax</code> instruction at address <code>0x7</code> instead of whatever instruction starts at <code>0x12</code>.</p><aside>Why did we say <code>0x12</code> is the end of the <code>jmp</code> instruction, and not <code>0x11</code>? Generally, in programming, we define the ending index of any interval to be the <em>starting index</em> of the <em>next</em> interval. It makes the math easier.</aside><p>See the <code>0xfffffff5</code> in the last four bytes of the <code>jmp</code> instruction? That’s −11 in little-endian signed integer representation, and it corresponds to the difference between the beginning of the <code>xorq</code> instruction, <code>0x7</code>, and the end of the <code>jmp</code> instruction, <code>0x12</code>. Although the <code>0x07</code> in the <code>jmp</code> instruction is an absolute address in assembly, x86_64 encodes it as a relative offset in machine code.</p><pre class="x86-prototype"><keyword>jmpq</keyword> *source</pre><p>Performs an indirect direct jump to the address in <code>source</code>.</p><p><em>Example:</em> <code class="x86asm">jmpq *24(, %ecx, 8)</code></p><p>Indirect jumps look more like most other x86_64 instructions, except their operands are always prefixed with an asterisk (<code>*</code>). The operand is an absolute address to be loaded into <code>rip</code>, and it can be in either a register, or a memory location. So, all of the following are valid indirect jumps:</p><pre class="x86asm">jmpq   *%eax<br/>jmpq   *(%eax)<br/>jmpq   *18(%eax, %ecx, 8)<br/>jmpq   *18</pre><h2>Flags and conditional jumps</h2><p>Jumps can be made conditional on the states of bits, called <keyword>processor flags</keyword>, in a special-purpose register called the <keyword>flags register</keyword>. The flags register is called <code>rflags</code> in x86_64.</p><p>Examples of processor flags include the overflow flag (OF), the carry flag (CF), the zero flag (ZF), and the sign flag (SF). Most instructions set at least some of the flags. Some instructions like <code>cmp</code> exist <em>solely</em> to set the flags.</p><pre class="x86-prototype"><keyword>cmpq</keyword> left, right</pre><p>Subtracts <code>left</code> from <code>right</code> and sets the processor flags, discarding the result.</p><p><em>Example:</em> <code class="x86asm">cmpq $10, %eax</code></p><p>The <code>cmp</code> instruction produces distinct flag patterns depending on whether its left operand is less than, equal to, or greater than its right operand, when compared as either unsigned or signed integers. We call these flag patterns <keyword>condition codes</keyword>.</p><p>The jump instruction comes in many conditional variants that perform jumps only if certain condition codes are present. They’re named assuming the flags were set by a comparison instruction.</p><div class="warning-container"><h2>Warning!</h2><p><warning>The order of the operands is switched in the Intel assembly syntax.</warning></p></div><table class="data-table"><tr class="header"><td>Flags set by</td></tr>
+<tr><td>cmpq op1, op2</td></tr>
+<tr class="header"><td>Instruction</td> <td>Condition</td> <td>Type</td></tr>
+<tr><td>jb   target  </td> <td>op1 &lt; op2</td> <td>unsigned</td></tr>
+<tr><td>ja   target  </td> <td>op1 &gt; op2</td> <td>unsigned</td></tr>
+<tr><td>jbe  target  </td> <td>op1 ≤ op2</td> <td>unsigned</td></tr>
+<tr><td>jae  target  </td> <td>op1 ≥ op2</td> <td>unsigned</td></tr>
+
+<tr><td>je   target  </td> <td>op1 = op2</td> <td>both</td></tr>
+
+<tr><td>jl   target  </td> <td>op1 &lt; op2</td> <td>signed</td></tr>
+<tr><td>jg   target  </td> <td>op1 &gt; op2</td> <td>signed</td></tr>
+<tr><td>jle  target  </td> <td>op1 ≤ op2</td> <td>signed</td></tr>
+<tr><td>jge  target  </td> <td>op1 ≥ op2</td> <td>signed</td></tr></table><p>The names of the conditional jumps follow a pretty consistent convention.</p><table class="data-table pad-left"><tr class="header"><td>Mnemonic</td> <td>Meaning</td></tr>
+<tr><td>jb</td>  <td>jump if below</td></tr>
+<tr><td>ja</td>  <td>jump if above</td></tr>
+<tr><td>jbe</td> <td>jump if below or equal to</td></tr>
+<tr><td>jae</td> <td>jump if above or equal to</td></tr>
+
+<tr><td>je</td>  <td>jump if equal to</td></tr>
+
+<tr><td>jl</td>  <td>jump if less than</td></tr>
+<tr><td>jg</td>  <td>jump if greater than</td></tr>
+<tr><td>jle</td> <td>jump if less than or equal to</td></tr>
+<tr><td>jge</td> <td>jump if greater than or equal to</td></tr></table><p>Jumps can also be made conditional on specific flags. For example, <code>jc</code> jumps if the carry flag is set.</p><h2>The stack</h2>
+        </div>
+    </div>
+</body>
+</html>

@@ -46,12 +46,6 @@
 (define (td-highlight #:background-color bg-color . elements)
     `(td (span ((style ,(string-append "background-color: " bg-color ";")) (class "highlight")) ,@elements)))
 
-(define (memory-table-h-addresses . elements)
-    `(tr ((class "memory-table-h-addresses")) ,@elements))
-
-(define (memory-table-h-cells . elements)
-    `(tr ((class "memory-table-h-cells")) ,@elements))
-
 (define (math . elements)
     `(simple-math ,@elements))
 

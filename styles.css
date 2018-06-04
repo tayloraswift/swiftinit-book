@@ -1,3 +1,15 @@
+@font-face {
+    font-family: FiraMono;
+    src: url(fonts/FiraMono-Regular.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: FiraMono;
+    src: url(fonts/FiraMono-Bold.woff);
+    font-weight: 700;
+}
+
 html
 {
     height: 100%;
@@ -128,19 +140,23 @@ ascii-figure
 
 code, pre, ascii-figure
 {
-    font-family: "Fira Mono", monospace;
+    font-family: "FiraMono", monospace;
     text-align: left;
     white-space: pre-wrap;
 }
 
 code
 {
-    font-family: "Fira Mono", monospace;
+    font-family: "FiraMono", monospace;
     font-size: 90%;
     overflow-wrap: break-word;
     padding: 0 0.25rem 0 0.25rem;
     border-radius: 0.25rem;
     background-color: rgba(0, 0, 0, 0.05);
+}
+code.x86asm 
+{
+    display: inline-block;
 }
 
 pre 
@@ -165,35 +181,31 @@ pre.x86-prototype
 
 table
 {
-    font-family: "Fira Mono", sans-serif;
+    font-family: "FiraMono", sans-serif;
     font-size: 85%;
     color: inherit;
     text-align: center;
     margin-left: auto;
     margin-right: auto;
     border-spacing: 4px;
+    white-space: pre;
 }
 td
 {
     border: none;
     border-color: rgb(70, 70, 70);
-}
-table.data-table tr:first-child td, table.place-table tr:first-child td
-{
-    font-weight: bold;
-    border-width: 0 0 2px 0;
-    border-style: solid;
-    padding: 0.5rem 0.5rem 0.25rem 0.5rem;
-    line-height: 125%;
-    font-size: 70%;
-    text-transform: uppercase;
-    letter-spacing: 0.05rem;
-}
-td
-{
     padding: 0.5rem 0.5rem 0rem 0.5rem;
     line-height: 100%;
 }
+tr.header td 
+{
+    border-bottom-width: 2px; 
+    border-bottom-style: solid;
+    padding-bottom: 0.25rem;
+    font-weight: bold;
+    font-size: 90%;
+}
+
 td.ellipsis::before
 {
     content: "···";
@@ -203,9 +215,17 @@ td.empty::before
     content: "///";
     opacity: 0.75;
 }
-td.invisible, td.invisible:first-child
+
+table.place-table tr:first-child td
 {
-    border: none;
+    font-weight: bold;
+    border-width: 0 0 2px 0;
+    border-style: solid;
+    padding: 0.5rem 0.5rem 0.25rem 0.5rem;
+    line-height: 125%;
+    font-size: 70%;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
 }
 td.annotation
 {
@@ -240,43 +260,79 @@ table.place-table td:last-child
     width: 100%;
 }
 
-table.memory-table-h
+
+table.memory-table, table.segmented-box
 {
-    border-spacing: 0;
-    padding-bottom: 0.5rem;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
 }
-table.memory-table-h td
+
+table.memory-table tr.space td
+{
+    border: none;
+    height: 1.5rem;
+}
+
+table.memory-table td, table.segmented-box td
+{
+    border-width: 2px;
+    border-style: solid;
+}
+
+table.segmented-box td
+{
+    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+}
+table.memory-table td
 {
     min-width: 2.65rem;
+    padding: 0.25rem 0 0.25rem 0;
 }
-tr.memory-table-h-addresses td
+table td.pad-left, table tr.pad-left td, table.pad-left tr td, 
+table.pad-left tr td
+{
+    padding-left: 0.75rem;
+    text-align: left;
+}
+
+table.memory-table .addresses td, table.memory-table td.addresses 
 {
     border: none;
     font-weight: normal;
-    font-size: 70%;
     text-transform: none;
-    padding: 0.5rem 0 0.25rem 0;
     vertical-align: top;
 }
-tr.memory-table-h-cells td
+table.memory-table .addresses td
 {
-    margin: 0;
-    border-width: 2px 2px 2px 0;
-    border-style: solid;
-    padding: 0.25rem 0 0.25rem 0;
+    padding: 0.5rem 0 0.25rem 0;
+    font-size: 70%;
 }
-tr.memory-table-h-cells td:first-child, tr.memory-table-h-cells td.solo
+table.memory-table.vertical td.addresses 
 {
-    border-width: 2px 2px 2px 2px;
+    color: rgb(150, 150, 150);
+    border-top: 2px solid transparent;
 }
-tr.memory-table-h-cells td.ellipsis
+
+table.memory-table tr.addresses td, 
+td.invisible, td.ellipsis
 {
-    border-width: 0 2px 0 0;
+    border: none !important;
 }
-tr.memory-table-h-cells td.ellipsis:last-child
+
+table.memory-table td.merge-down
 {
-    border-width: 0 0 0 0;
+    border-bottom: hidden;
 }
+
+
+
+table.segmented-box tr.header td
+{
+    font-weight: inherit;
+    font-size: inherit;
+    padding-bottom: 0.5rem;
+}
+
 
 .content-container
 {
