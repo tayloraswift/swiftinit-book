@@ -19,21 +19,18 @@ The long part in the beginning is the ◊keyword{opcode}, which in this case cor
 
 Machine instructions in x86_64 are ◊keyword{variable length}. They are usually 1 to 6 bytes long, though they can be up to 15 bytes long in some cases, mainly when the instruction contains a long immediate operand.
 
-Don’t bother memorizing the details of machine code. It’s not important. What’s important is that binary machine code can be stored in memory for the processor to fetch and execute directly as machine instructions.
+Don’t bother memorizing the details of machine code. It’s not important. What’s important to understand is that machine code is really nothing but assembly encoded as binary data.
 
-◊section{Memory areas}
+◊section{The instruction pointer}
 
-Computers today generally execute binaries by setting aside a minimum of two areas in memory. The first area, called the ◊keyword{code segment}, stores the ◊keyword{program text}, the machine instructions in the binaries. The second area is the ◊keyword{stack area}, memory for the program to use in its calculations.
+Because a machine instruction is really just binary data, we can store it in memory somewhere and tell the processor to execute it by pointing the processor’s ◊keyword{instruction pointer} to that location. The processor then loads the instruction from memory and executes it, constituting one ◊keyword{instruction cycle}. 
 
-Instructions that touch memory almost always operate on the stack area or areas similar to the stack area we haven’t discussed yet. Programs, called ◊keyword{self-modifying programs}, that change memory in their own program text exist, but are extremely rare and are generally considered a form of art rather than a practical type of program. In fact, the operating system usually sets the code segment to read-only, which prevents the program from modifying its text.
+◊aside{Because of this, the instruction pointer is sometimes also called the ◊keyword{program counter}.}
 
-◊section{Instruction cycles and the instruction pointer}
+For most instructions, the last step of the instruction cycle involves incrementing the instruction pointer by the length of the instruction, so that the next instruction to be executed is the next instruction in memory. This lets the processor execute sequences of instructions in memory. The exceptions are ◊keyword{control transfer instructions}, which set the instruction pointer explicitly. 
 
-Processors contain an ◊keyword{instruction pointer} register which holds the address of an instruction in memory. On each ◊keyword{instruction cycle}, the processor loads the instruction referenced by the pointer from memory and executes it. The instruction pointer register is called ◊code{rip} in x86_64.
+In x86_64, the instruction pointer lives in a ◊keyword{special-purpose register} called ◊code{rip}. Unlike general purpose registers, special-purpose registers can only be accessed by specific instructions, so you can’t use ◊x86asm{movq} to load or read ◊code{rip}. (Though you ◊em{can} use it as a base register in an addressing mode.)
 
-The ◊code{rip} register is a ◊keyword{special-purpose register}. Unlike general purpose registers, special-purpose registers can only be accessed by specific instructions, so you can’t use ◊x86asm{movq} to load or read ◊code{rip}. (Though you ◊em{can} use it as a base register in an addressing mode.)
-
-For almost all instructions, the processor automatically increments the instruction pointer by the length of the instruction. This lets the processor load and execute instructions one after another in memory.
 
 ◊table[#:class "memory-table vertical"]{
     ◊tr{
@@ -101,11 +98,9 @@ For almost all instructions, the processor automatically increments the instruct
     }
 }
 
-The exceptions are ◊keyword{control transfer instructions}, which set the instruction pointer explicitly. 
-
 ◊section{Jumps}
 
-◊keyword{Jump instructions} are the simplest control transfer instructions — they simply load ◊code{rip} with whatever their operands evaluate to, causing the processor to move to an arbitrary location in the program text instead of advancing to the next instruction in memory. The mnemonic for a basic, unconditional jump instruction is ◊code{jmp}.
+◊keyword{Jump instructions} are the simplest control transfer instructions. They load ◊code{rip} with whatever their operands evaluate to, causing the processor to move to an arbitrary location in the program text instead of advancing to the next instruction in memory. The mnemonic for a basic, unconditional jump instruction is ◊code{jmp}.
 
 Jumps can be ◊keyword{direct} or ◊keyword{indirect}. Direct jumps add a constant offset into the instruction pointer and so always transfer program execution to a specific spot in the program text. Indirect jumps load the instruction pointer with a value stored either in a register or in memory and can be used to transfer program execution to a variable position in the program text. 
 
@@ -317,4 +312,118 @@ The names of the conditional jumps follow a pretty consistent convention.
 
 Jumps can also be made conditional on specific flags. For example, ◊code{jc} jumps if the carry flag is set.
 
-◊section{The stack}
+◊section{Memory areas}
+
+The range of addresses, or ◊keyword{memory area}, a program’s machine code is stored in is called its ◊keyword{code segment}. The machine instructions inside it are collectively referred to as the ◊keyword{program text}. 
+
+Code segments are only one kind of memory area. Most kinds of memory areas are just used to store data, not executable instructions. When interpreted as instructions, this data is gibberish, so we never (intentionally) point the instruction pointer to any memory location not inside a code segment.
+
+Even though data areas don’t contain code, they’re important because they allow a program to maintain state as it executes. (Registers can also preserve state, but they are limited in number and so are frequently overwritten.)
+
+The example program below consists of a looped ◊code{add} instruction that repeatedly adds ◊code{2} to the 64-bit integer at address ◊code{0x10}. The ◊code{add} and ◊code{jmp} instructions form a code segment, while the integer forms a data area.
+
+◊table[#:class "memory-table vertical"]{
+    ◊tr{
+        ◊td[#:class "addresses pad-right" #:rowspan "16"]{code ->}
+        ◊td[#:class "addresses"]{x00} 
+        ◊td[#:class "merge-down"]{x48} ◊td[#:class "invisible pad-left"]{addq  $0x2, 0x10}
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x01} 
+        ◊td[#:class "merge-down"]{x83} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x02} 
+        ◊td[#:class "merge-down"]{x25} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x03} 
+        ◊td[#:class "merge-down"]{x10} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x04} 
+        ◊td[#:class "merge-down"]{x00} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x05} 
+        ◊td[#:class "merge-down"]{x00} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x06} 
+        ◊td[#:class "merge-down"]{x00} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x07} 
+        ◊td{x02} 
+    }
+    
+    ◊tr{
+        ◊td[#:class "addresses"]{x08} 
+        ◊td[#:class "merge-down"]{xE9} ◊td[#:class "invisible pad-left"]{jmp   0x00}
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x09} 
+        ◊td[#:class "merge-down"]{xF2} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x0A} 
+        ◊td[#:class "merge-down"]{xFF} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x0B} 
+        ◊td[#:class "merge-down"]{xFF} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x0C} 
+        ◊td{xFF} 
+    }
+    
+    ◊tr{
+        ◊td[#:class "addresses"]{x0D} 
+        ◊td[#:class "empty"]{} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x0E} 
+        ◊td[#:class "empty"]{} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x0F} 
+        ◊td[#:class "empty"]{} 
+    }
+    
+    ◊tr{
+        ◊td[#:class "addresses pad-right" #:rowspan "8"]{data ->}
+        ◊td[#:class "addresses"]{x10} 
+        ◊td[#:class "merge-down"]{x00} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x11} 
+        ◊td[#:class "merge-down"]{x00} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x12} 
+        ◊td[#:class "merge-down"]{x00} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x13} 
+        ◊td[#:class "merge-down"]{x00} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x14} 
+        ◊td[#:class "merge-down"]{x00} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x15} 
+        ◊td[#:class "merge-down"]{x00} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x16} 
+        ◊td[#:class "merge-down"]{x00} 
+    }
+    ◊tr{
+        ◊td[#:class "addresses"]{x17} 
+        ◊td{x00} 
+    }
+}
+
+Instructions that touch memory almost always operate on data areas. ◊keyword{Self-modifying programs} that change their own program text exist, but are extremely rare and are generally considered a form of art rather than a practical type of program.

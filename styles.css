@@ -294,6 +294,12 @@ table.pad-left tr td
     padding-left: 0.75rem;
     text-align: left;
 }
+table td.pad-right, table tr.pad-right td, table.pad-right tr td, 
+table.pad-right tr td
+{
+    padding-right: 0.75rem;
+    text-align: right;
+}
 
 table.memory-table .addresses td, table.memory-table td.addresses 
 {
