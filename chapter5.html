@@ -1,0 +1,38 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Language abstractions</title>
+    <link rel="stylesheet" type="text/css" media="all" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css?family=Unica+One|Noticia+Text:400,400i,700,700i|Fira+Mono:400,700,&amp;subset=latin-ext" rel="stylesheet">
+    <link rel="stylesheet" href="highlight/styles/github.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="highlight/highlight.pack.js"></script>
+    <script>
+        $(document).ready(function()
+        {
+          $('code.x86asm').each(function(i, block)
+          {
+            hljs.highlightBlock(block);
+          });
+          $('code.swift').each(function(i, block)
+          {
+            hljs.highlightBlock(block);
+          });
+          $('pre.x86asm').each(function(i, block)
+          {
+            hljs.highlightBlock(block);
+          });
+        });
+    </script>
+</head>
+<body>
+    <a class="nav-triangle-left" href="chapter4.html"><div>Prev</div></a>
+
+
+    <div class="content-container">
+        <div class="content">
+            <div class="chapter-header"><div class="chapter-number">5</div><h1>Language abstractions</h1></div><p>Assembly is extremely literal. Each instruction corresponds to a machine operation, which makes assembly straightforward to translate into machine code. For this reason, assembly languages (though not x86_64 specifically) were the first programming languages ever created. However, the same traits that make assembly natural for computers to process also make assembly highly <em>unnatural</em> for human programmers to use. People soon started creating <keyword>high-level languages</keyword>, languages that express logical intent and abstract away hardware details like registers and instructions.</p><p>High-level languages tend to look like this:</p><pre class="swift">let c:Int = a + b/2 - 76</pre><p>Rather than this:</p><pre class="x86asm">movq    %rax, %rcx<br />sarq    $1, %rbx<br />addq    %rbx, %rcx<br />subq    $76, %rcx</pre>
+        </div>
+    </div>
+</body>
+</html>

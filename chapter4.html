@@ -1,7 +1,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Code and the stack</title>
+    <title>Code and data</title>
     <link rel="stylesheet" type="text/css" media="all" href="styles.css" />
     <link href="https://fonts.googleapis.com/css?family=Unica+One|Noticia+Text:400,400i,700,700i|Fira+Mono:400,700,&amp;subset=latin-ext" rel="stylesheet">
     <link rel="stylesheet" href="highlight/styles/github.css">
@@ -27,11 +27,11 @@
 </head>
 <body>
     <a class="nav-triangle-left" href="chapter3.html"><div>Prev</div></a>
-
+    <a class="nav-triangle-right" href="chapter5.html"><div>Next</div></a>
 
     <div class="content-container">
         <div class="content">
-            <div class="chapter-header"><div class="chapter-number">4</div><h1>Code and the stack</h1></div><p>Assembly instructions can be encoded in binary as <keyword>machine code</keyword>. Machine code is quite unintelligible to humans, so the translation from assembly mnemonics to binary machine instructions is done by tools called <keyword>assemblers</keyword>. Programs that have been assembled into machine code are called <keyword>binaries</keyword>.</p><p>The following is an example of an x86_64 instruction encoded in machine code.</p><table class="segmented-box"><tr class="header"><td class="invisible">addq</td> <td class="invisible"></td> <td class="invisible">%rax,</td> <td class="invisible">%rcx</td></tr>
+            <div class="chapter-header"><div class="chapter-number">4</div><h1>Code and data</h1></div><p>Assembly instructions can be encoded in binary as <keyword>machine code</keyword>. Machine code is quite unintelligible to humans, so the translation from assembly mnemonics to binary machine instructions is done by tools called <keyword>assemblers</keyword>. Programs that have been assembled into machine code are called <keyword>binaries</keyword>.</p><p>The following is an example of an x86_64 instruction encoded in machine code.</p><table class="segmented-box"><tr class="header"><td class="invisible">addq</td> <td class="invisible"></td> <td class="invisible">%rax,</td> <td class="invisible">%rcx</td></tr>
 <tr><td>0100100000000001</td> <td>11</td> <td>000</td> <td>001</td></tr></table><p>The long part in the beginning is the <keyword>opcode</keyword>, which in this case corresponds to an <code class="x86asm">addq</code> instruction. The two triplets of bits at the end correspond to register operands. In x86_64, <code>rax</code> through <code>rdi</code> are numbered <code>000</code> through <code>111</code>. (The <code>r8</code> through <code>r15</code> registers are encoded slightly differently.)</p><p>Machine instructions in x86_64 are <keyword>variable length</keyword>. They are usually 1 to 6 bytes long, though they can be up to 15 bytes long in some cases, mainly when the instruction contains a long immediate operand.</p><p>Don’t bother memorizing the details of machine code. It’s not important. What’s important to understand is that machine code is really nothing but assembly encoded as binary data.</p><h2>The instruction pointer</h2><p>Because a machine instruction is really just binary data, we can store it in memory somewhere and tell the processor to execute it by pointing the processor’s <keyword>instruction pointer</keyword> to that location. The processor then loads the instruction from memory and executes it, constituting one <keyword>instruction cycle</keyword>.</p><aside>Because of this, the instruction pointer is sometimes also called the <keyword>program counter</keyword>.</aside><p>For most instructions, the last step of the instruction cycle involves incrementing the instruction pointer by the length of the instruction, so that the next instruction to be executed is the next instruction in memory. This lets the processor execute sequences of instructions in memory. The exceptions are <keyword>control transfer instructions</keyword>, which set the instruction pointer explicitly.</p><p>In x86_64, the instruction pointer lives in a <keyword>special-purpose register</keyword> called <code>rip</code>. Unlike general purpose registers, special-purpose registers can only be accessed by specific instructions, so you can’t use <code class="x86asm">movq</code> to load or read <code>rip</code>. (Though you <em>can</em> use it as a base register in an addressing mode.)</p><table class="memory-table vertical"><tr><td class="invisible">rip 1 -&gt;</td>
 <td class="addresses">x0</td>
 <td class="merge-down">x48</td> <td class="invisible pad-left">movq  %rcx, %rax</td></tr>
@@ -68,41 +68,41 @@
 <td class="addresses">xB</td>
 <td class="merge-down">x29</td></tr>
 <tr><td class="addresses">xC</td>
-<td>xC8</td></tr></table><h2>Jumps</h2><p><keyword>Jump instructions</keyword> are the simplest control transfer instructions. They load <code>rip</code> with whatever their operands evaluate to, causing the processor to move to an arbitrary location in the program text instead of advancing to the next instruction in memory. The mnemonic for a basic, unconditional jump instruction is <code>jmp</code>.</p><p>Jumps can be <keyword>direct</keyword> or <keyword>indirect</keyword>. Direct jumps add a constant offset into the instruction pointer and so always transfer program execution to a specific spot in the program text. Indirect jumps load the instruction pointer with a value stored either in a register or in memory and can be used to transfer program execution to a variable position in the program text.</p><pre class="x86-prototype"><keyword>jmp</keyword> address</pre><p>Performs a direct jump to <code>address</code>.</p><p><em>Example:</em> <code class="x86asm">jmp 89</code></p><p>The x86_64 syntax for direct jump instructions is a little weird. Direct jump operands can be thought of as immediate values, though they are written without the <code>$</code> prefix. Direct jumps also don’t come in different sizes, so it’s <code>jmp 21</code>, not <code>jmpq 21</code>.</p><table class="memory-table vertical"><tr><td class="addresses">x0</td>
+<td>xC8</td></tr></table><h2>Jumps</h2><p><keyword>Jump instructions</keyword> are the simplest control transfer instructions. They load <code>rip</code> with whatever their operands evaluate to, causing the processor to move to an arbitrary location in the program text instead of advancing to the next instruction in memory. The mnemonic for a basic, unconditional jump instruction is <code>jmp</code>.</p><p>Jumps can be <keyword>direct</keyword> or <keyword>indirect</keyword>. Direct jumps add a constant offset into the instruction pointer and so always transfer program execution to a specific spot in the program text. Indirect jumps load the instruction pointer with a value stored either in a register or in memory and can be used to transfer program execution to a variable position in the program text.</p><pre class="x86-prototype"><keyword>jmp</keyword> address</pre><p>Performs a direct jump to <code>address</code>.</p><p><em>Example:</em> <code class="x86asm">jmp 89</code></p><p>The x86_64 syntax for direct jump instructions is a little weird. Direct jump operands can be thought of as immediate values, though they are written without the <code>$</code> prefix. Direct jumps also don’t come in different sizes, so it’s <code>jmp 21</code>, not <code>jmpq 21</code>.</p><table class="memory-table vertical"><tr><td class="addresses">x00</td>
 <td class="merge-down">x48</td> <td class="invisible pad-left">movq  %rcx, %rax</td></tr>
-<tr><td class="addresses">x1</td>
+<tr><td class="addresses">x01</td>
 <td class="merge-down">x89</td></tr>
-<tr><td class="addresses">x2</td>
+<tr><td class="addresses">x02</td>
 <td>xC8</td></tr>
 
-<tr><td class="addresses">x3</td>
+<tr><td class="addresses">x03</td>
 <td class="merge-down">x48</td> <td class="invisible pad-left">sarq  $63 , %rcx</td></tr>
-<tr><td class="addresses">x4</td>
+<tr><td class="addresses">x04</td>
 <td class="merge-down">xC1</td></tr>
-<tr><td class="addresses">x5</td>
+<tr><td class="addresses">x05</td>
 <td class="merge-down">xF9</td></tr>
-<tr><td class="addresses">x6</td>
+<tr><td class="addresses">x06</td>
 <td>x3F</td></tr>
 
-<tr><td class="addresses">x7</td>
+<tr><td class="addresses">x07</td>
 <td class="merge-down">x48</td> <td class="invisible pad-left">xorq  %rcx, %rax</td></tr>
-<tr><td class="addresses">x8</td>
+<tr><td class="addresses">x08</td>
 <td class="merge-down">x31</td></tr>
-<tr><td class="addresses">x9</td>
+<tr><td class="addresses">x09</td>
 <td>xC8</td></tr>
 
-<tr><td class="addresses">xA</td>
+<tr><td class="addresses">x0A</td>
 <td class="merge-down">x48</td> <td class="invisible pad-left">subq  %rcx, %rax</td></tr>
-<tr><td class="addresses">xB</td>
+<tr><td class="addresses">x0B</td>
 <td class="merge-down">x29</td></tr>
-<tr><td class="addresses">xC</td>
+<tr><td class="addresses">x0C</td>
 <td>xC8</td></tr>
 
-<tr><td class="addresses">xD</td>
+<tr><td class="addresses">x0D</td>
 <td class="merge-down">xE9</td> <td class="invisible pad-left">jmp   0x07</td></tr>
-<tr><td class="addresses">xE</td>
+<tr><td class="addresses">x0E</td>
 <td class="merge-down">xF5</td></tr>
-<tr><td class="addresses">xF</td>
+<tr><td class="addresses">x0F</td>
 <td class="merge-down">xFF</td></tr>
 <tr><td class="addresses">x10</td>
 <td class="merge-down">xFF</td></tr>

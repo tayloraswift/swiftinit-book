@@ -1,6 +1,6 @@
 #lang pollen
 
-◊chapter[#:index "4"]{Code and the stack}
+◊chapter[#:index "4"]{Code and data}
 
 Assembly instructions can be encoded in binary as ◊keyword{machine code}. Machine code is quite unintelligible to humans, so the translation from assembly mnemonics to binary machine instructions is done by tools called ◊keyword{assemblers}. Programs that have been assembled into machine code are called ◊keyword{binaries}.
 
@@ -116,71 +116,71 @@ The x86_64 syntax for direct jump instructions is a little weird. Direct jump op
 
 ◊table[#:class "memory-table vertical"]{
     ◊tr{
-        ◊td[#:class "addresses"]{x0} 
+        ◊td[#:class "addresses"]{x00} 
         ◊td[#:class "merge-down"]{x48} ◊td[#:class "invisible pad-left"]{movq  %rcx, %rax}
     }
     ◊tr{
-        ◊td[#:class "addresses"]{x1} 
+        ◊td[#:class "addresses"]{x01} 
         ◊td[#:class "merge-down"]{x89} 
     }
     ◊tr{
-        ◊td[#:class "addresses"]{x2} 
+        ◊td[#:class "addresses"]{x02} 
         ◊td{xC8} 
     }
     
     ◊tr{
-        ◊td[#:class "addresses"]{x3} 
+        ◊td[#:class "addresses"]{x03} 
         ◊td[#:class "merge-down"]{x48} ◊td[#:class "invisible pad-left"]{sarq  $63 , %rcx}
     }
     ◊tr{
-        ◊td[#:class "addresses"]{x4} 
+        ◊td[#:class "addresses"]{x04} 
         ◊td[#:class "merge-down"]{xC1} 
     }
     ◊tr{
-        ◊td[#:class "addresses"]{x5} 
+        ◊td[#:class "addresses"]{x05} 
         ◊td[#:class "merge-down"]{xF9} 
     }
     ◊tr{
-        ◊td[#:class "addresses"]{x6} 
+        ◊td[#:class "addresses"]{x06} 
         ◊td{x3F} 
     }
 
     ◊tr{
-        ◊td[#:class "addresses"]{x7} 
+        ◊td[#:class "addresses"]{x07} 
         ◊td[#:class "merge-down"]{x48} ◊td[#:class "invisible pad-left"]{xorq  %rcx, %rax}
     }
     ◊tr{
-        ◊td[#:class "addresses"]{x8} 
+        ◊td[#:class "addresses"]{x08} 
         ◊td[#:class "merge-down"]{x31} 
     }
     ◊tr{
-        ◊td[#:class "addresses"]{x9} 
+        ◊td[#:class "addresses"]{x09} 
         ◊td{xC8} 
     }
     
     ◊tr{
-        ◊td[#:class "addresses"]{xA} 
+        ◊td[#:class "addresses"]{x0A} 
         ◊td[#:class "merge-down"]{x48} ◊td[#:class "invisible pad-left"]{subq  %rcx, %rax}
     }
     ◊tr{
-        ◊td[#:class "addresses"]{xB} 
+        ◊td[#:class "addresses"]{x0B} 
         ◊td[#:class "merge-down"]{x29} 
     }
     ◊tr{
-        ◊td[#:class "addresses"]{xC} 
+        ◊td[#:class "addresses"]{x0C} 
         ◊td{xC8} 
     }
     
     ◊tr{
-        ◊td[#:class "addresses"]{xD} 
+        ◊td[#:class "addresses"]{x0D} 
         ◊td[#:class "merge-down"]{xE9} ◊td[#:class "invisible pad-left"]{jmp   0x07}
     }
     ◊tr{
-        ◊td[#:class "addresses"]{xE} 
+        ◊td[#:class "addresses"]{x0E} 
         ◊td[#:class "merge-down"]{xF5} 
     }
     ◊tr{
-        ◊td[#:class "addresses"]{xF} 
+        ◊td[#:class "addresses"]{x0F} 
         ◊td[#:class "merge-down"]{xFF} 
     }
     ◊tr{
